@@ -1,0 +1,69 @@
+<!DOCTYPE ServicesConfiguration
+        PUBLIC "=//iPlanet//Service Management Services (SMS) 1.0 DTD//EN"
+        "jar://com/sun/identity/sm/sms.dtd">
+
+<ServicesConfiguration>
+    <Service name="iPlanetAMAuthTrusonaAuthService" version="1.0">
+        <Schema
+                serviceHierarchy="/DSAMEConfig/authentication/iPlanetAMAuthTrusonaAuthService"
+                i18nFileName="amAuthTrusonaAuth" revisionNumber="10"
+                i18nKey="trusonaauth-service-description" resourceName="trusona">
+            <Organization>
+                <!-- Specify resourceName for a JSON-friendly property in the REST SMS -->
+                <AttributeSchema name="iplanet-am-auth-trusonaauth-auth-level" resourceName="authLevel"
+                                 type="single" syntax="number_range" rangeStart="0" rangeEnd="2147483647"
+                                 i18nKey="a500">
+                    <DefaultValues>
+                        <Value>1</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+
+                <!-- No need for resourceName when the name is JSON-compatible -->
+                <AttributeSchema name="trusona-api-token"
+                                 type="single" syntax="string" validator="no" i18nKey="a501" />
+
+                <AttributeSchema name="trusona-api-secret"
+                                 type="single" syntax="password" validator="no" i18nKey="a502" />
+
+                <AttributeSchema name="trusona-action"
+                                type="single" syntax="string" validator="no" i18nKey="a503" />
+
+                <AttributeSchema name="trusona-resource"
+                                 type="single" syntax="string" validator="no" i18nKey="a504" />
+
+                <AttributeSchema name="trusona-deeplink-url"
+                                 type="single" syntax="string" validator="no" i18nKey="a505" />
+
+                <!--
+                 For Auth Modules, the parent Schema element specifies the REST SMS resourceName,
+                 and the nested SubSchema must have resourceName="USE-PARENT"
+                -->
+                <SubSchema name="serverconfig" inheritance="multiple" resourceName="USE-PARENT">
+                    <AttributeSchema name="iplanet-am-auth-trusonaauth-auth-level" resourceName="authLevel"
+                                     type="single" syntax="number_range" rangeStart="0" rangeEnd="2147483647"
+                                     i18nKey="a500">
+                        <DefaultValues>
+                            <Value>1</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+
+                    <AttributeSchema name="trusona-api-token"
+                                     type="single" syntax="string" validator="no" i18nKey="a501" />
+
+                    <AttributeSchema name="trusona-api-secret"
+                                     type="single" syntax="password" validator="no" i18nKey="a502" />
+
+                    <AttributeSchema name="trusona-action"
+                                     type="single" syntax="string" validator="no" i18nKey="a503" />
+
+                    <AttributeSchema name="trusona-resource"
+                                     type="single" syntax="string" validator="no" i18nKey="a504" />
+
+                    <AttributeSchema name="trusona-deeplink-url"
+                                     type="single" syntax="string" validator="no" i18nKey="a505" />
+
+                </SubSchema>
+            </Organization>
+        </Schema>
+    </Service>
+</ServicesConfiguration>

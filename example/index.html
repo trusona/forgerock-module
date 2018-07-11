@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Trusona</title>
+  <link type="text/css" rel="stylesheet" href="https://static.trusona.net/web-sdk/css/trusona.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <style>
+    body,
+    html {
+      height: 100%;
+    }
+
+    body {
+      color: #888;
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif
+    }
+
+    form {
+      max-width: 300px;
+    }
+
+    .heading {
+      max-width: 300px;
+      border-top: 1px solid;
+      border-color: #ccc;
+    }
+
+    .heading>span {
+      position: relative;
+      top: -14px;
+      background: #fff;
+      padding: 0 15px;
+      font-size: 16px;
+    }
+
+    .btn-secondary {
+      background-color: #7B46D1;
+      box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+      max-width: 300px;
+    }
+
+    .form-control {
+      background-color: rgb(234, 234, 234);
+    }
+
+    .btn-close {
+      font-size: xx-large;
+      background-color: #fff;
+    }
+
+    .hero {
+      background-color: #7B46D1;
+      background-image: url('https://static.trusona.net/forgerock/trusona-hero.png');
+      background-position: center;
+      background-size: cover;
+    }
+
+    .muted-link {
+      color: #888;
+    }
+
+    .alert {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      <div class="col-md-6 d-none d-md-block hero"></div>
+      <div class="col-md-6 m-auto">
+          <div id="trusona-view" class="text-center" hidden>
+          <div class="row">
+            <div class="col-2 offset-9">
+              <button type="button" class="btn btn-lg btn-close mb-4" onclick="closeTrucode()">
+                <svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <g transform="translate(-1335.000000, -74.000000)" fill="#000000">
+                          <g transform="translate(1313.000000, 52.000000)">
+                              <path d="M40.8941853,39.0005871 L55.6043371,24.2845245 C56.1264307,23.7607425 56.1264307,22.9139265 55.601197,22.3900964 C55.0791033,21.8694458 54.2268002,21.8694458 53.7046583,22.3932358 L39.0009477,37.1060867 L24.2940166,22.3932358 C23.7687829,21.8694538 22.9196198,21.8694538 22.3943378,22.3900964 C21.8690558,22.9107389 21.8691041,23.7606943 22.3911896,24.2845245 L37.1069775,39.0005871 L22.3944103,53.7166497 C21.8723166,54.2404317 21.8723166,55.0872476 22.3975584,55.6079464 C22.6586052,55.8682716 23.0014234,56 23.3442577,56 C23.6902241,56 24.0330423,55.8682716 24.2940971,55.6079464 L39.0010283,40.8950955 L53.7079594,55.6047347 C53.9690062,55.8681914 54.3149725,55.9967883 54.6577988,55.9967883 C55.000617,55.9967883 55.3434352,55.8650599 55.6044981,55.6047347 C56.1297318,55.0840841 56.13288,54.2341367 55.6076382,53.713438 L40.8941853,39.0005871 Z" id="close"></path>
+                          </g>
+                      </g>
+                  </g>
+              </svg>
+            </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div id="tru-code" class="mx-auto trucode w-50 mb-2"></div>
+              <p>Scan using the Trusona mobile app.</p>
+            </div>
+          </div>
+        </div>
+        <div id="form-view" class="text-center">
+          <form id="login-form" class="mt-0 mb-2 mx-auto" action="#" autocomplete="off">
+            <div id="failAlert" class="alert alert-danger" role="alert">Authentication failed</div>
+            <input type="hidden" name="trucodeId" value="" />
+            <input type="hidden" name="trucodePayload" value=""/>
+            <div class="form-group">
+              <input type="text" class="form-control" id="username" name="username" placeholder="Username" autocomplete="username">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" id="password" name="password" placeholder="Password" autocomplete="current-password">
+            </div>
+            <button onclick="failLogin()" class="btn btn-lg btn-block btn-secondary">Login</button>
+          </form>
+          <div class="heading text-center mt-5 mb-4 mx-auto">
+            <span>Or, use Trusona</span>
+          </div>
+          <div class="row">
+            <div class="col">
+              <a id="no-passwords" class="trusona-easy-login-button" href="javascript:void(0);" onclick="noPasswords()">Login with Trusona</a>
+              <div class="text-center mt-2 mx-auto"></div>
+                <p>Fast and more secure.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript"src="https://static.trusona.net/web-sdk/js/trucode-0.8.1.js"></script>
+
+  <script type="text/javascript">
+    // Config variables
+    var truCodeConfig = {
+      truCodeUrl: 'TRUCODE_URL',
+      relyingPartyId: 'RELYING_PARTY_ID'
+    };
+    var deeplinkUrl = 'DEEPLINK_URL';
+
+    var forgerockRealm = 'FORGEROCK_REALM'
+
+    var forgerockAuthUrl = '/openam/json/realms/' + forgerockRealm + '/authenticate'
+
+    var currentState = {}
+
+    function shouldDeeplink() {
+      return /Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent)
+    }
+
+    function getDeeplinkUrl(payload) {
+      if (this.deeplinkUrl.indexOf('?') >= 0) {
+        return `${this.deeplinkUrl}&payload=${payload}`
+      } else {
+        return `${this.deeplinkUrl}?payload=${payload}`
+      }
+    }
+
+    function doDeeplink(truCode) {
+      submitTruCode(truCode.id, () => {
+        window.location.href = getDeeplinkUrl(truCode.payload)
+        setTimeout(finalize, 5000)
+      })
+    }
+
+    function makeAPIRequest(callback) {
+      $.ajax(forgerockAuthUrl, {
+        data: JSON.stringify(currentState),
+        contentType: "application/json",
+        type: "POST",
+        success: function(data) {
+          currentState = data;
+          callback()
+        },
+        error: displayResult
+      });
+    }
+
+    function requiresTruCode() {
+      // TODO: check state, return true if we need to get a trucode
+      return true
+    }
+
+    function handleTruCodeScanned(truCodeId) {
+      $('#tru-code').hide()
+      $('#caption').hide()
+      submitTruCode(truCodeId, finalize)
+    }
+
+    function handleTruCodeError() {
+      window.alert("something went wrong here");
+    }
+
+    function submitTruCode(truCodeId, callback) {
+      // mutate the state
+      currentState.callbacks[0].input[0].value = truCodeId
+      currentState.callbacks[1].input[0].value = 2
+      makeAPIRequest(callback)
+    }
+
+    function finalize() {
+      // Call FR with completion stage
+      displayResult()
+    }
+
+    function displayResult() {
+      if (currentState.tokenId) {
+        window.location.href = "home.html"
+      } else {
+        closeTrucode()
+        failLogin()
+
+        currentState = {}
+        makeAPIRequest(handleInitialState)
+      }
+      console.log(currentState)
+    }
+
+    function handleInitialState() {
+      if (requiresTruCode()) {
+        if (shouldDeeplink()) {
+          Trusona.createTruCode(truCodeConfig, doDeeplink)
+        } else {
+          Trusona.renderTruCode({
+            truCodeConfig: truCodeConfig,
+            truCodeElement: document.getElementById('tru-code'),
+            onPaired: handleTruCodeScanned,
+            onError: handleTruCodeError
+          });
+        }
+      } else {
+        finalize()
+      }
+    }
+
+    function noPasswords() {
+      document.getElementById("trusona-view").hidden = false
+      document.getElementById("form-view").hidden = true
+    }
+
+    function closeTrucode() {
+      document.getElementById("trusona-view").hidden = true
+      document.getElementById("form-view").hidden = false
+    }
+
+    function failLogin() {
+      $('#failAlert').show()
+    }
+
+    makeAPIRequest(handleInitialState);
+  </script>
+
+</body>
+</html>

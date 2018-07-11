@@ -1,0 +1,49 @@
+<!DOCTYPE ModuleProperties PUBLIC
+        "=//iPlanet//Authentication Module Properties XML Interface 1.0 DTD//EN"
+        "jar://com/sun/identity/authentication/Auth_Module_Properties.dtd">
+
+<ModuleProperties moduleName="TrusonAuth" version="1.0" >
+    <Callbacks length="0" order="1" timeout="600" header="#WILL NOT BE SHOWN#" />
+    <Callbacks length="5" order="2" timeout="600" header="Trusona">
+        <TextOutputCallback messageType="script">PLACEHOLDER</TextOutputCallback>
+        <HiddenValueCallback>
+            <Id>truCodeId</Id>
+        </HiddenValueCallback>
+        <HiddenValueCallback>
+            <Id>error</Id>
+        </HiddenValueCallback>
+        <HiddenValueCallback>
+            <Id>payload</Id>
+        </HiddenValueCallback>
+        <HiddenValueCallback>
+            <Id>trusonaficationId</Id>
+        </HiddenValueCallback>
+    </Callbacks>
+    <Callbacks length="2" order="3" timeout="600" header="Trusona">
+        <NameCallback isRequired="true">
+            <Prompt>identifier</Prompt>
+        </NameCallback>
+        <ChoiceCallback isRequired="true">
+            <Prompt>identifier_type</Prompt>
+            <ChoiceValues>
+                <ChoiceValue>
+                    <Value>user_identifier</Value>
+                </ChoiceValue>
+                <ChoiceValue>
+                    <Value>device_identifier</Value>
+                </ChoiceValue>
+                <ChoiceValue>
+                    <Value>trucode_id</Value>
+                </ChoiceValue>
+            </ChoiceValues>
+        </ChoiceCallback>
+    </Callbacks>
+    <Callbacks length="0" order="4" timeout="600" header="Trusona">
+    </Callbacks>
+    <Callbacks length="2" order="5" timeout="600" header="Trusona">
+        <TextOutputCallback messageType="script">PLACEHOLDER</TextOutputCallback>
+        <RedirectCallback method="GET">
+            <RedirectUrl>REDIRECT_URL</RedirectUrl>
+        </RedirectCallback>
+    </Callbacks>
+</ModuleProperties>
