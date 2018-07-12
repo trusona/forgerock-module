@@ -14,8 +14,7 @@
     The Trusona ForgeRock Module is an Authentication Module for ForgeRock AM that allows you to authenticate users with
     Trusona.
   </description>
-  <!-- todo: update to public repo URL -->
-  <url>https://trusona.com</url>
+  <url>https://github.com/trusona/forgerock-module</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
