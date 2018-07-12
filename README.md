@@ -6,7 +6,7 @@ The Trusona AM Authentication module is developed against and supported on versi
 
 ## Installation
 
-To install the Trusona Forgerock Module, download the latest `trusona-forgerock-module-x.x.x-all.jar` from the [releases page](./releases), copy the jar into `WEB-INF/lib/` where AM is deployed, and then restart AM or the container in which it runs. See [Building and Installing the Sample Auth Module](https://backstage.forgerock.com/docs/am/5.5/authentication-guide/#build-config-sample-auth-module) for more details on installing custom authentication modules.
+To install the Trusona Forgerock Module, download the latest `trusona-forgerock-module-x.x.x-all.jar` from the [releases page](https://github.com/trusona/forgerock-module/releases), copy the jar into `WEB-INF/lib/` where AM is deployed, and then restart AM or the container in which it runs. See [Building and Installing the Sample Auth Module](https://backstage.forgerock.com/docs/am/5.5/authentication-guide/#build-config-sample-auth-module) for more details on installing custom authentication modules.
 
 ## Configuration
 
