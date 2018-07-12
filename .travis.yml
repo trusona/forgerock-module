@@ -1,40 +1,27 @@
 branches:
   only:
-    - /^master.*$/
-    - /^release.*$/
-    - /^v\d+\.\d+\.\d+$/  ## matching vX.Y.Z where X.Y.Z conforms to semver
-
+  - "/^master.*$/"
+  - "/^release.*$/"
+  - "/^v\\d+\\.\\d+\\.\\d+$/"
 language: java
 jdk: oraclejdk8
 install: true
-
 before_install:
-  - openssl aes-256-cbc -K $encrypted_0d3d32f76180_key -iv $encrypted_0d3d32f76180_iv -in data/settings.xml.enc -out data/settings.xml -d
-  - ./scripts/env.sh
-
+- openssl aes-256-cbc -K $encrypted_d2628f630f8b_key -iv $encrypted_d2628f630f8b_iv
+  -in data/settings.xml.enc -out data/settings.xml -d
+- "./scripts/env.sh"
 before_deploy:
-  - pip install --user awscli
-  - export PATH=$PATH:$HOME/.local/bin
-
+- export PATH=$PATH:$HOME/.local/bin
 script:
-  - mvn package
-
+- mvn package
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
-    on:
-      branch: master
-
-  - provider: script
-    skip_cleanup: true
-    script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
-    on:
-      tags: true
-
-notifications:
-  slack:
-    on_success: always
-    on_failure: always
-    rooms:
-      - secure: "b8JfVfwdDZym7u6eMJ4uy03tB9YpfJFMLwQ2r2p29EXK1rBLwdNHnT3CY0ShKndmwBwRpOiBg4i2wEbSZRWvMZA3qy99iXPVeR+E/+i6oRfJt1nC7eIzc8lUrOUhL/SC3V/Xwdt16hqxPqyidkvRcArOsvXzo2VqJV2rIEvtvhTxvJsrZF3S/LVswIluuJWz5Q8nwOH/2L4+cD+fF8exXTn1cY+l4Y1EjLq1S6wLNiOqgBGk0n9apLzjy3/8df83VDbjRitejzBIjS1RelSLjPAoHPw/7SMa3ZsmLOcbIJsFcvlkG78tM1dtKhjfdFSVZj9IbtyBnigge4FYTAmdvozf6n2lwzk1GgCnnZ/ayaS/eM7xKhl/IQELEHeE0luAYpI5RT6UeJzUkeP1g8frYSoz561USxks8X5G6P9BiJkX6F96FoySEtBgaDl8pzrD9Vkubib4iIK+RGU6voycLIGPNnQaU49WIrySNvErPNRGCQjatbVhaSpRNUGWwLsLhXtebMhUr9i6tblCCSOwMuKIzdOMtCxYvYVifL3PfoE7zh2NT5UxUxsrOIqlA3cizEgcvLhiTfSMbRRVBZ1FH7a6Ada5XZKhbC3JgrnPMybWyj/rG4SDN2FAqdUVHbcIZvCuuuxlolDY/7enu/V40WdAnVTSqpL+0cZ1fqC2DBc="
+- provider: script
+  skip_cleanup: true
+  script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
+  on:
+    branch: master
+- provider: script
+  skip_cleanup: true
+  script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
+  on:
+    tags: true
