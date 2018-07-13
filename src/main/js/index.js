@@ -1,8 +1,9 @@
 import Trusona from '@trusona/trucode-svg';
 import { Browser, LocalStorage } from '@trusona/deeplink';
+import jQuery from 'jquery';
 
 class TrusonaFR {
-  constructor(truCodeConfig, deeplinkUrl, trucodeElementId, jQuery) {
+  constructor(truCodeConfig, deeplinkUrl, trucodeElementId) {
     this.deeplinkUrl = deeplinkUrl;
     this.truCodeConfig = truCodeConfig;
     this.jQuery = jQuery;

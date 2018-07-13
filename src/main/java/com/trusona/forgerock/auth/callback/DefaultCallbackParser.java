@@ -94,7 +94,7 @@ public class DefaultCallbackParser implements CallbackParser {
     }
 
     scriptBuilder.append("\n");
-    scriptBuilder.append(String.format("var app = new TrusonaFR(%s, '%s', '%s', jQuery);%n", webSdkConfig, deeplinkUrl, trucodeElementId));
+    scriptBuilder.append(String.format("var app = new TrusonaFR(%s, '%s', '%s');%n", webSdkConfig, deeplinkUrl, trucodeElementId));
     scriptBuilder.append(command);
 
     return new ScriptTextOutputCallback(scriptBuilder.toString());

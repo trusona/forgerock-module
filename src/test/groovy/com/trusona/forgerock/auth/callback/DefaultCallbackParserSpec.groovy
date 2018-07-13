@@ -122,7 +122,7 @@ class DefaultCallbackParserSpec extends Specification {
 
     then:
     res.message.contains("this is a test")
-    res.message.contains("var app = new TrusonaFR(websdk, 'deeplink', 'callbackId', jQuery);")
+    res.message.contains("var app = new TrusonaFR(websdk, 'deeplink', 'callbackId');")
     res.message.contains("app.renderTrucode();")
   }
 
