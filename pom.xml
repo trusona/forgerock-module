@@ -254,6 +254,11 @@
       <artifactId>commons-lang3</artifactId>
       <version>${commons-lang3.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.trusona.libs</groupId>
+      <artifactId>trusona-client-java-sdk</artifactId>
+      <version>2.4.1</version>
+    </dependency>
 
     <!-- test dependencies -->
     <dependency>
