@@ -46,7 +46,7 @@ $ mvn --encrypt-password $artifactory_password{XuPqXqg2xkgH8a1yPGGznvpEbQuPgaJvg
       <repositories>
         <repository>
           <id>sdk-snapshots-local</id>
-          <url>https://trusona.jfrog.io/trusona/sdk-snapshots-local</url>
+          <url>https://trusona.jfrog.io/trusona/sdk-snapshots</url>
             <releases>
                 <enabled>true</enabled>
                 <checksumPolicy>fail</checksumPolicy>
