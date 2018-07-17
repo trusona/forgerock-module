@@ -1,8 +1,10 @@
-# Setting up Maven
+## Setting up Maven
+
+### Setting up Maven for Forgerock
 
 Download settings.xml file from ForgeRock backstage after you've logged in `http://maven.forgerock.org/repo/private-releases/settings.xml` and put it in `~/.m2/settings.xml`
 
-## Setting up Maven to hit the Trusona repository
+### Setting up Maven for Trusona
 
 1. Create a master password in Maven:
 
@@ -63,3 +65,16 @@ $ mvn --encrypt-password $artifactory_password{XuPqXqg2xkgH8a1yPGGznvpEbQuPgaJvg
 </settings>
 ```
 
+## Setting up NPM
+
+1. Update your `~/.npmrc` file with your Trusona Artifactory credentials
+
+```bash
+cat <<EOF > ~/.npmrc
+@trusona:registry=https://trusona.jfrog.io/trusona/api/npm/npm
+//trusona.jfrog.io/trusona/api/npm/:_password="$(echo -ne $ARTIFACTORY_PASSWORD | base64 -w 0)"
+//trusona.jfrog.io/trusona/api/npm/:username=$ARTIFACTORY_USERNAME
+//trusona.jfrog.io/trusona/api/npm/:email=$ARTIFACTORY_EMAIL
+//trusona.jfrog.io/trusona/api/npm/:always-auth=true
+EOF
+```
