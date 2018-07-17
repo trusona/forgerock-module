@@ -1,5 +1,6 @@
 package com.trusona.forgerock.auth.principal;
 
+import com.trusona.client.TrusonaClient;
 import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.sdk.resources.dto.TrusonaficationResult;
 
@@ -13,8 +14,8 @@ public class DefaultPrincipalMapper implements PrincipalMapper {
   private final TrusonaAppPrincipalMapper appMapper;
   private final TrusonaSdkPrincipalMapper sdkMapper;
 
-  public DefaultPrincipalMapper() {
-    this(new TrusonaAppPrincipalMapper(), new TrusonaSdkPrincipalMapper());
+  public DefaultPrincipalMapper(TrusonaClient trusonaClient) {
+    this(new TrusonaAppPrincipalMapper(trusonaClient), new TrusonaSdkPrincipalMapper());
   }
 
   public DefaultPrincipalMapper(TrusonaAppPrincipalMapper appMapper, TrusonaSdkPrincipalMapper sdkMapper) {
