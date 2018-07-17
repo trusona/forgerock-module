@@ -7,15 +7,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.trusona.integration</groupId>
   <artifactId>trusona-forgerock-module</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.0-SNAPSHOT</version>
 
   <name>Trusona ForgeRock Module</name>
   <description>
     The Trusona ForgeRock Module is an Authentication Module for ForgeRock AM that allows you to authenticate users with
     Trusona.
   </description>
-  <!-- todo: update to public repo URL -->
-  <url>https://trusona.com</url>
+  <url>https://github.com/trusona/forgerock-module</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -288,6 +287,14 @@
   </dependencies>
 
   <repositories>
+    <repository>
+      <id>artifatory-releases</id>
+      <url>https://trusona.jfrog.io/trusona/sdk-releases</url>
+    </repository>
+    <repository>
+      <id>artifactory-snapshots</id>
+      <url>https://trusona.jfrog.io/trusona/sdk-snapshots</url>
+    </repository>
     <repository>
       <id>openam-dependencies</id>
       <url>https://maven.forgerock.org/repo/openam-dependencies</url>
