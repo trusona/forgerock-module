@@ -9,13 +9,13 @@ import java.util.Date;
 import java.util.Optional;
 
 public class DefaultPrincipalMapper implements PrincipalMapper {
-  private static final String TRUSONA_APP_PREFIX = "trusonaId:";
+  static final String TRUSONA_APP_PREFIX = "trusonaId:";
 
   private final TrusonaAppPrincipalMapper appMapper;
   private final TrusonaSdkPrincipalMapper sdkMapper;
 
-  public DefaultPrincipalMapper(TrusonaClient trusonaClient) {
-    this(new TrusonaAppPrincipalMapper(trusonaClient), new TrusonaSdkPrincipalMapper());
+  public DefaultPrincipalMapper(TrusonaClient trusonaClient, IdentityFinder identityFinder) {
+    this(new TrusonaAppPrincipalMapper(trusonaClient, identityFinder), new TrusonaSdkPrincipalMapper());
   }
 
   public DefaultPrincipalMapper(TrusonaAppPrincipalMapper appMapper, TrusonaSdkPrincipalMapper sdkMapper) {
@@ -38,7 +38,8 @@ public class DefaultPrincipalMapper implements PrincipalMapper {
   private Optional<Principal> mapUserIdentifier(String userIdentifier, TrusonaficationResult result) {
     if (userIdentifier.startsWith(TRUSONA_APP_PREFIX)) {
       return appMapper.mapPrincipal(result);
-    } else {
+    }
+    else {
       return sdkMapper.mapPrincipal(result);
     }
   }

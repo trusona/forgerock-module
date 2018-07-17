@@ -1,6 +1,7 @@
 package com.trusona.forgerock.auth;
 
 import com.sun.identity.authentication.spi.AMLoginModule;
+import com.sun.identity.authentication.spi.AuthLoginException;
 import com.sun.identity.shared.datastruct.CollectionHelper;
 import com.trusona.client.TrusonaClient;
 import com.trusona.client.config.TrusonaClientConfig;
@@ -8,6 +9,7 @@ import com.trusona.client.v1.TrusonaClientV1;
 import com.trusona.forgerock.auth.authenticator.Trusonaficator;
 import com.trusona.forgerock.auth.callback.DefaultCallbackParser;
 import com.trusona.forgerock.auth.principal.DefaultPrincipalMapper;
+import com.trusona.forgerock.auth.principal.IdentityFinder;
 import com.trusona.sdk.Trusona;
 import com.trusona.sdk.TrusonaEnvironment;
 import com.trusona.sdk.resources.exception.TrusonaException;
@@ -19,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Map;
+import java.util.Set;
 
 
 public class TrusonaAuth extends AMLoginModule {
@@ -47,6 +50,7 @@ public class TrusonaAuth extends AMLoginModule {
     TrusonaEnvironment trusonaEnvironment = new TrusonaEnvResolver().getEnvironment();
 
     Trusona trusona = new Trusona(apiToken, apiSecret, trusonaEnvironment);
+    Set<String> userAliasSet;
     String webSdkConfig;
 
     try {
@@ -55,6 +59,14 @@ public class TrusonaAuth extends AMLoginModule {
     catch (TrusonaException e) {
       TrusonaDebug.getInstance().error("Could not get Web SDK Credentials", e);
       throw new RuntimeException("Could not get Web SDK Credentials", e);
+    }
+
+    try {
+      userAliasSet = getUserAliasList();
+    }
+    catch (AuthLoginException e) {
+      TrusonaDebug.getInstance().error("Failed to obtain UserAliasSet", e);
+      throw new RuntimeException("Failed to obtain UserAliasSet", e);
     }
 
     TrusonaClientConfig trusonaClientConfig = new TrusonaClientConfig();
@@ -67,7 +79,7 @@ public class TrusonaAuth extends AMLoginModule {
     this.trusonaAuth = new TrusonaAuthImpl(
       new Trusonaficator(trusona, action, resource),
       new DefaultCallbackParser(webSdkConfig, deeplinkUrl, "callback_0"),
-      new DefaultPrincipalMapper(trusonaClient),
+      new DefaultPrincipalMapper(trusonaClient, new IdentityFinder(userAliasSet, getRequestOrg())),
       this::replaceCallback
     );
   }
@@ -91,7 +103,7 @@ public class TrusonaAuth extends AMLoginModule {
         return ENDPOINT_URL_PRODUCTION;
 
       default:
-        throw new RuntimeException("Invalid Trusona environment configured: " + trusonaEnvironment.toString());
+        throw new RuntimeException("Invalid Trusona environment configured: " + trusonaEnvironment);
     }
   }
 
@@ -99,7 +111,8 @@ public class TrusonaAuth extends AMLoginModule {
     URL url;
     try {
       url = new URL(urlString);
-    } catch(MalformedURLException e) {
+    }
+    catch (MalformedURLException e) {
       throw new RuntimeException("Precompiled, static URL was malformed... contact Trusona and have them get their stuff together");
     }
     return url;
