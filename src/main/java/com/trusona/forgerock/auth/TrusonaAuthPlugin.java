@@ -15,7 +15,7 @@ public class TrusonaAuthPlugin implements AmPlugin {
 
   @Override
   public String getPluginVersion() {
-    return "1.1.0";
+    return "1.2.0";
   }
 
   @Override

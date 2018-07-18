@@ -7,8 +7,4 @@ import java.util.Optional;
 
 public interface PrincipalMapper {
   Optional<Principal> mapPrincipal(TrusonaficationResult result);
-
-  interface lookup {
-    Optional<Principal> lookupPrincipal(String subject);
-  }
 }
