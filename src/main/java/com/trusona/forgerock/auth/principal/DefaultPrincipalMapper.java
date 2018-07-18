@@ -32,7 +32,7 @@ public class DefaultPrincipalMapper implements PrincipalMapper {
       .filter(TrusonaficationResult::isSuccessful)
       .filter(trusonaficationResult -> trusonaficationResult.getExpiresAt().after(lastAllowedExpiration))
       .map(TrusonaficationResult::getUserIdentifier)
-      .flatMap((userIdentifier) -> mapUserIdentifier(userIdentifier, result));
+      .flatMap(userIdentifier -> mapUserIdentifier(userIdentifier, result));
   }
 
   private Optional<Principal> mapUserIdentifier(String userIdentifier, TrusonaficationResult result) {
