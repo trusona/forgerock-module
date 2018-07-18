@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 mkdir -p ~/.m2
 cp data/settings.xml ~/.m2/settings.xml

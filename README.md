@@ -4,9 +4,11 @@
 
 The Trusona AM Authentication module is developed against and supported on version 5.5 of ForgeRock AM.
 
+
 ## Installation
 
 To install the Trusona Forgerock Module, download the latest `trusona-forgerock-module-x.x.x-all.jar` from the [releases page](https://github.com/trusona/forgerock-module/releases), copy the jar into `WEB-INF/lib/` where AM is deployed, and then restart AM or the container in which it runs. See [Building and Installing the Sample Auth Module](https://backstage.forgerock.com/docs/am/5.5/authentication-guide/#build-config-sample-auth-module) for more details on installing custom authentication modules.
+
 
 ## Configuration
 
@@ -22,6 +24,29 @@ Before configuring the module, make sure you have your Trusona API token and sec
 ### The Action and Resource fields
 
 When you attempt to authenticate a user with this module, a Trusonafication will be issued for the user. The Accept/Reject screen for the Trusonafication will use the action and resource to display a sentence in the format "$customer_name would like to confirm your $action to $resource". So if you configure Action to be "login", and your Resource to be "ForgeRock", the sentence will read "$customer_name would like to confirm your login to ForgeRock"
+
+
+### Mapping Trusona Users to ForgeRock Subjects
+
+To map your Trusona account to your ForgeRock profile, you'll need to configure your authentication settings to map your Trusona identifier to a ForgeRock identifier. To do this, under your realm, go to `Authentication` -> `Settings` -> `User Profile` and edit the `Alias Search Attribute Name` to include the LDAP attribute that contains your Trusona identifier. The Trusona identifier may be different depending on how you are using Trusona (Trusona App vs Trusona SDK).
+
+
+#### Mapping Users Registered with the Trusona App
+
+The Trusona App uses verified email addresses as the user's identifiers. To map a Trusona App user, you can enter the `mail` LDAP attribute and it will look for ForgeRock profiles that contain a matching `Email Address`. See the screenshot below:
+
+![Using email to map users](./search-alias-by-mail.jpg)
+
+
+#### Mapping Users Registered with the Trusona SDK
+
+If you are using the Trusona SDK within your own app, the Trusona identifier will be the `userIdentifier` that you used when you activated the user's device. If you registered the user using their ForgeRock ID then the mapping will automatically work. If you registered the user's email address, you can set it up to use `mail` and it will work the same as the Trusona App. Finally, if you are using a different type of identifier, you will need to ensure that the ID you registered with Trusona is represented as a field in the user's ForgeRock profile and the appropriate LDAP attribute is used as a search alias. One example way to do a custom mapping like this would be to add your identifier to the user's `User Alias List` in their profile, and then configure the `Alias Search Attribute Name` to use the LDAP attribute `iplanet-am-user-alias-list`.
+
+![Using an alias to map users](./search-alias-by-alias-list.jpg)
+
+![Setting the alias](./user-alias-list.jpg)
+
+Alternatively, you could also consult the OpenAM documentation to add [custom profile attributes](https://backstage.forgerock.com/docs/am/5.5/maintenance-guide/#sec-maint-datastore-customattr) to store your identifier.
 
 
 ## Usage
