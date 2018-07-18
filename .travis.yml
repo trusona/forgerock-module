@@ -3,25 +3,30 @@ branches:
   - "/^master.*$/"
   - "/^release.*$/"
   - "/^v\\d+\\.\\d+\\.\\d+$/"
+
 language: java
 jdk: oraclejdk8
 install: true
+
 before_install:
-- openssl aes-256-cbc -K $encrypted_d2628f630f8b_key -iv $encrypted_d2628f630f8b_iv
-  -in data/settings.xml.enc -out data/settings.xml -d
-- "./scripts/env.sh"
+  - openssl aes-256-cbc -K $encrypted_0d3d32f76180_key -iv $encrypted_0d3d32f76180_iv -in data/settings.xml.enc -out data/settings.xml -d
+  - ./scripts/env.sh
+
 before_deploy:
-- export PATH=$PATH:$HOME/.local/bin
+  - export PATH=$PATH:$HOME/.local/bin
+
 script:
-- mvn package
+  - mvn package
+
 deploy:
-- provider: script
-  skip_cleanup: true
-  script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
-  on:
-    branch: master
-- provider: script
-  skip_cleanup: true
-  script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
-  on:
-    tags: true
+  - provider: script
+    skip_cleanup: true
+    script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
+    on:
+      branch: master
+
+  - provider: script
+    skip_cleanup: true
+    script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
+    on:
+      tags: true
