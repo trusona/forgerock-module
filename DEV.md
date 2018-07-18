@@ -24,7 +24,8 @@ $ mvn --encrypt-master-password $master_password
 3. Encrypt your Artifactory password:
 
 ```bash
-$ mvn --encrypt-password $artifactory_password{XuPqXqg2xkgH8a1yPGGznvpEbQuPgaJvg9wXPE2Zytsi8xJbim5KoK3Juk7SULpA==}
+$ mvn --encrypt-password $artifactory_password
+{XuPqXqg2xkgH8a1yPGGznvpEbQuPgaJvg9wXPE2Zytsi8xJbim5KoK3Juk7SULpA==}
 ```
 
 4. Add to `~/.m2/settings.xml` with Artifactory information:
