@@ -294,7 +294,7 @@
 
   <repositories>
     <repository>
-      <id>artifatory-releases</id>
+      <id>artifactory-releases</id>
       <url>https://trusona.jfrog.io/trusona/sdk-releases</url>
     </repository>
     <repository>
