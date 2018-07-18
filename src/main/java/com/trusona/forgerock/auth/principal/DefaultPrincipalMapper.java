@@ -1,26 +1,24 @@
 package com.trusona.forgerock.auth.principal;
 
+import com.sun.identity.authentication.internal.AuthPrincipal;
+import com.sun.identity.idm.AMIdentity;
 import com.trusona.client.TrusonaClient;
+import com.trusona.client.dto.response.UserResponse;
 import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.sdk.resources.dto.TrusonaficationResult;
 
 import java.security.Principal;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 public class DefaultPrincipalMapper implements PrincipalMapper {
-  static final String TRUSONA_APP_PREFIX = "trusonaId:";
+  private static final String TRUSONA_APP_PREFIX = "trusonaId:";
 
-  private final TrusonaAppPrincipalMapper appMapper;
-  private final TrusonaSdkPrincipalMapper sdkMapper;
+  private final TrusonaClient trusonaClient;
+  private final IdentityFinder identityFinder;
 
   public DefaultPrincipalMapper(TrusonaClient trusonaClient, IdentityFinder identityFinder) {
-    this(new TrusonaAppPrincipalMapper(trusonaClient, identityFinder), new TrusonaSdkPrincipalMapper());
-  }
-
-  public DefaultPrincipalMapper(TrusonaAppPrincipalMapper appMapper, TrusonaSdkPrincipalMapper sdkMapper) {
-    this.appMapper = appMapper;
-    this.sdkMapper = sdkMapper;
+    this.trusonaClient = trusonaClient;
+    this.identityFinder = identityFinder;
   }
 
   @Override
@@ -32,15 +30,42 @@ public class DefaultPrincipalMapper implements PrincipalMapper {
       .filter(TrusonaficationResult::isSuccessful)
       .filter(trusonaficationResult -> trusonaficationResult.getExpiresAt().after(lastAllowedExpiration))
       .map(TrusonaficationResult::getUserIdentifier)
-      .flatMap(userIdentifier -> mapUserIdentifier(userIdentifier, result));
+      .flatMap(this::mapPrincipal);
   }
 
-  private Optional<Principal> mapUserIdentifier(String userIdentifier, TrusonaficationResult result) {
+
+  private Optional<Principal> mapPrincipal(String userIdentifier) {
+    List<String> subjects = getSubjects(userIdentifier);
+    AMIdentity identity = null;
+
+    if (subjects.isEmpty()) {
+      return Optional.empty();
+    }
+
+    for (String subject : subjects) {
+      TrusonaDebug.getInstance().message("Looking within ForgeRock for user with subject '{}'", subject);
+      identity = identityFinder.findForgeRockUser(subject);
+
+      if (identity != null) {
+        TrusonaDebug.getInstance().message("User found!");
+        break;
+      }
+    }
+
+    AuthPrincipal authPrincipal = new AuthPrincipal(identity != null ? identity.getUniversalId() : subjects.get(0));
+    return Optional.of(authPrincipal);
+  }
+
+  private List<String> getSubjects(String userIdentifier) {
     if (userIdentifier.startsWith(TRUSONA_APP_PREFIX)) {
-      return appMapper.mapPrincipal(result);
+      String trusonaId = userIdentifier.replace(TRUSONA_APP_PREFIX, "");
+      TrusonaDebug.getInstance().message("Looking up user by trusonaId {}", trusonaId);
+
+      Optional<UserResponse> userResponse = trusonaClient.getUser(trusonaId);
+      return userResponse.<List<String>>map(response -> new LinkedList<>(response.getEmails())).orElse(Collections.emptyList());
     }
     else {
-      return sdkMapper.mapPrincipal(result);
+      return Collections.singletonList(userIdentifier);
     }
   }
 }

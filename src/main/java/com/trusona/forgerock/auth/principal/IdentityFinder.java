@@ -15,7 +15,7 @@ public class IdentityFinder {
     this.organization = organization;
   }
 
-  AMIdentity findForgeRockUser(String emailAddress) {
-    return IdUtils.getIdentity(emailAddress, organization, userAliasSet);
+  AMIdentity findForgeRockUser(String subject) {
+    return IdUtils.getIdentity(subject, organization, userAliasSet);
   }
 }
