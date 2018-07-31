@@ -9,7 +9,7 @@
     "jquery": "^3.3.1"
   },
   "devDependencies": {
-    "markdown-pdf": "^8.1.1",
+    "markdown-pdf": "^9.0.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.4",
