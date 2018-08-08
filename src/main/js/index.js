@@ -1,4 +1,4 @@
-import Trusona from '@trusona/trucode-svg';
+import Trusona from 'trusona-trucode';
 import { Browser, LocalStorage } from '@trusona/deeplink';
 import jQuery from 'jquery';
 
