@@ -244,6 +244,11 @@
     </dependency>
     <dependency>
       <groupId>org.forgerock.am</groupId>
+      <artifactId>auth-node-api</artifactId>
+      <version>${forgerock.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.forgerock.am</groupId>
       <artifactId>openam-shared</artifactId>
       <version>${forgerock.version}</version>
       <scope>provided</scope>
