@@ -53,7 +53,7 @@
         <executions>
           <execution>
             <id>copy-dist-resource</id>
-            <phase>validate</phase>
+            <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
