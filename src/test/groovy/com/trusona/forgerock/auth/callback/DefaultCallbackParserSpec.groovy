@@ -16,7 +16,7 @@ class DefaultCallbackParserSpec extends Specification {
   Callback[] callbacks
 
   def setup() {
-    sut = new DefaultCallbackParser("websdk", "deeplink", "callbackId")
+    sut = new DefaultCallbackParser()
 
     identifierCallback = new NameCallback("identifier")
 
@@ -116,26 +116,6 @@ class DefaultCallbackParserSpec extends Specification {
     res.get().trucodeId == trucodeId
   }
 
-  def "getScriptCallback should return a callback that has our bundled JS"() {
-    when:
-    def res = sut.getScriptCallback("app.renderTrucode();")
-
-    then:
-    res.message.contains("this is a test")
-    res.message.contains("var app = new TrusonaFR(websdk, 'deeplink', 'callbackId');")
-    res.message.contains("app.renderTrucode();")
-  }
-
-  def "getRedirectCallback should return a Redirect URL for the deeplink"() {
-    when:
-    def res = sut.getRedirectCallback("somePayload")
-
-    then:
-    res.method == "GET"
-    res.redirectUrl == "deeplink?payload=somePayload" /* another forgerock bug workaround */
-    res.redirectData["payload"] == 'somePayload'
-  }
-
   def "getCallbackValue should get the value for the callback"() {
     given:
     def callback = new HiddenValueCallback("foo")
@@ -162,19 +142,5 @@ class DefaultCallbackParserSpec extends Specification {
 
     then:
     res == ""
-  }
-
-  def "should use trusona-app.net if not deeplink url is provided"() {
-    given:
-    sut = new DefaultCallbackParser("websdk", deeplinkUrl, "trucodeId")
-
-    when:
-    def res = sut.getRedirectCallback("payload")
-
-    then:
-    res.redirectUrl.startsWith("https://trusona-app.net/idp")
-
-    where:
-    deeplinkUrl << [ null, "", "   " ]
   }
 }

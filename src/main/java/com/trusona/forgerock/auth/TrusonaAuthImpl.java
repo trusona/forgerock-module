@@ -4,6 +4,7 @@ import com.sun.identity.authentication.callbacks.HiddenValueCallback;
 import com.sun.identity.authentication.spi.AuthLoginException;
 import com.sun.identity.authentication.util.ISAuthConstants;
 import com.trusona.forgerock.auth.authenticator.Authenticator;
+import com.trusona.forgerock.auth.callback.CallbackFactory;
 import com.trusona.forgerock.auth.callback.CallbackParser;
 import com.trusona.forgerock.auth.callback.TrusonaCallback;
 import com.trusona.forgerock.auth.principal.PrincipalMapper;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class TrusonaAuthImpl {
   private Authenticator authenticator;
   private CallbackParser callbackParser;
+  private CallbackFactory callbackFactory;
   private PrincipalMapper principalMapper;
   private Principal principal;
   private UUID trusonaficationId;
@@ -27,10 +29,11 @@ public class TrusonaAuthImpl {
   public static final int COMPLETION_STATE = 4;
   public static final int REDIRECT_TO_DEEPLINK = 5;
 
-  public TrusonaAuthImpl(Authenticator authenticator, CallbackParser callbackParser,
+  public TrusonaAuthImpl(Authenticator authenticator, CallbackParser callbackParser, CallbackFactory callbackFactory,
                          PrincipalMapper principalMapper, TriConsumer<Integer, Integer, Callback> callbackUpdate) {
     this.authenticator = authenticator;
     this.callbackParser = callbackParser;
+    this.callbackFactory = callbackFactory;
     this.principalMapper = principalMapper;
     this.callbackUpdate = callbackUpdate;
     this.principal = null;
@@ -42,7 +45,7 @@ public class TrusonaAuthImpl {
 
     switch (state) {
       case ISAuthConstants.LOGIN_START:
-        callbackUpdate.accept(TRUCODE_STATE, 0, callbackParser.getScriptCallback("app.run();"));
+        callbackUpdate.accept(TRUCODE_STATE, 0, callbackFactory.makeScriptCallback("app.run();"));
         return TRUCODE_STATE;
 
       case TRUCODE_STATE:
@@ -74,8 +77,8 @@ public class TrusonaAuthImpl {
         }
 
         if (StringUtils.isNotBlank(payload)) {
-          callbackUpdate.accept(REDIRECT_TO_DEEPLINK, 0, callbackParser.getScriptCallback("app.saveTrusonaficationCookie('" + trusonaficationId.toString() + "');"));
-          callbackUpdate.accept(REDIRECT_TO_DEEPLINK, 1, callbackParser.getRedirectCallback(payload));
+          callbackUpdate.accept(REDIRECT_TO_DEEPLINK, 0, callbackFactory.makeScriptCallback("app.saveTrusonaficationCookie('" + trusonaficationId.toString() + "');"));
+          callbackUpdate.accept(REDIRECT_TO_DEEPLINK, 1, callbackFactory.makeRedirectCallback(payload));
           return REDIRECT_TO_DEEPLINK;
         }
 

@@ -7,6 +7,7 @@ import com.trusona.client.TrusonaClient;
 import com.trusona.client.config.TrusonaClientConfig;
 import com.trusona.client.v1.TrusonaClientV1;
 import com.trusona.forgerock.auth.authenticator.Trusonaficator;
+import com.trusona.forgerock.auth.callback.CallbackFactory;
 import com.trusona.forgerock.auth.callback.DefaultCallbackParser;
 import com.trusona.forgerock.auth.principal.DefaultPrincipalMapper;
 import com.trusona.forgerock.auth.principal.IdentityFinder;
@@ -78,7 +79,8 @@ public class TrusonaAuth extends AMLoginModule {
 
     this.trusonaAuth = new TrusonaAuthImpl(
       new Trusonaficator(trusona, action, resource),
-      new DefaultCallbackParser(webSdkConfig, deeplinkUrl, "callback_0"),
+      new DefaultCallbackParser(),
+      new CallbackFactory(webSdkConfig, deeplinkUrl, "callback_0"),
       new DefaultPrincipalMapper(trusonaClient, new IdentityFinder(userAliasSet, getRequestOrg())),
       this::replaceCallback
     );

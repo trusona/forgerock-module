@@ -10,9 +10,5 @@ import java.util.Optional;
 public interface CallbackParser {
   Optional<TrusonaCallback> getTrusonaCallback(Callback[] callbacks);
 
-  ScriptTextOutputCallback getScriptCallback(String command);
-
-  RedirectCallback getRedirectCallback(String payload);
-
   String getCallbackValue(HiddenValueCallback callback);
 }

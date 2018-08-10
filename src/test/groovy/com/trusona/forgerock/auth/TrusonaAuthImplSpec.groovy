@@ -7,6 +7,7 @@ import com.sun.identity.authentication.spi.AuthLoginException
 import com.sun.identity.authentication.spi.RedirectCallback
 import com.sun.identity.authentication.util.ISAuthConstants
 import com.trusona.forgerock.auth.authenticator.Authenticator
+import com.trusona.forgerock.auth.callback.CallbackFactory
 import com.trusona.forgerock.auth.callback.CallbackParser
 import com.trusona.forgerock.auth.callback.TrusonaCallback
 import com.trusona.forgerock.auth.principal.PrincipalMapper
@@ -25,6 +26,7 @@ class TrusonaAuthImplSpec extends Specification {
   TrusonaAuthImpl sut
   Authenticator mockAuthenticator
   CallbackParser mockCallbackParser
+  CallbackFactory mockCallbackFactory
   PrincipalMapper mockPrincipalMapper
 
   TrusonaCallback mockCallback
@@ -33,11 +35,12 @@ class TrusonaAuthImplSpec extends Specification {
   def setup() {
     mockAuthenticator = Mock(Authenticator)
     mockCallbackParser = Mock(CallbackParser)
+    mockCallbackFactory = Mock(CallbackFactory)
     mockPrincipalMapper = Mock(PrincipalMapper)
     mockCallback = Mock(TrusonaCallback)
     mockCallbackUpdate = Mock(TriConsumer)
 
-    sut = new TrusonaAuthImpl(mockAuthenticator, mockCallbackParser, mockPrincipalMapper, mockCallbackUpdate)
+    sut = new TrusonaAuthImpl(mockAuthenticator, mockCallbackParser,  mockCallbackFactory, mockPrincipalMapper, mockCallbackUpdate)
   }
 
   def truCodeStateCallbacks(trucodeId, error, payload) {
@@ -141,7 +144,7 @@ class TrusonaAuthImplSpec extends Specification {
   def "process should update the script callback and go to the  trucode state when in initial state"() {
     given:
     def scriptCallback = new ScriptTextOutputCallback("foobar")
-    mockCallbackParser.getScriptCallback(_) >> scriptCallback
+    mockCallbackFactory.makeScriptCallback(_) >> scriptCallback
 
     when:
     def nextState = sut.process(new Callback[0], LOGIN_START)
@@ -186,8 +189,8 @@ class TrusonaAuthImplSpec extends Specification {
 
     def callbacks = truCodeStateCallbacks(UUID.randomUUID().toString(), "", payload)
 
-    mockCallbackParser.getRedirectCallback(payload) >> redirect
-    mockCallbackParser.getScriptCallback(_) >> script
+    mockCallbackFactory.makeRedirectCallback(payload) >> redirect
+    mockCallbackFactory.makeScriptCallback(_) >> script
     mockCallbackParser.getTrusonaCallback(_) >> Optional.of(mockCallback)
     mockCallbackParser.getCallbackValue(_ as HiddenValueCallback) >> { args -> args[0].getValue() }
     mockAuthenticator.createTrusonafication(mockCallback) >> UUID.randomUUID()

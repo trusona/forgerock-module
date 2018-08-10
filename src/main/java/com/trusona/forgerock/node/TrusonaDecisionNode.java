@@ -2,14 +2,17 @@ package com.trusona.forgerock.node;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.sun.identity.authentication.callbacks.HiddenValueCallback;
 import com.sun.identity.sm.RequiredValueValidator;
 import com.trusona.forgerock.auth.TrusonaEnvResolver;
 import com.trusona.forgerock.auth.authenticator.Authenticator;
+import com.trusona.forgerock.auth.authenticator.Trusonaficator;
 import com.trusona.forgerock.auth.callback.CallbackParser;
 import com.trusona.forgerock.auth.callback.DefaultCallbackParser;
 import com.trusona.sdk.Trusona;
 import com.trusona.sdk.TrusonaEnvironment;
 import com.trusona.sdk.resources.dto.TrusonaficationStatus;
+import com.trusona.sdk.resources.exception.TrusonaException;
 import org.forgerock.guava.common.collect.ImmutableList;
 import org.forgerock.json.JsonValue;
 import org.forgerock.openam.annotations.sm.Attribute;
@@ -20,11 +23,14 @@ import org.forgerock.util.i18n.PreferredLocales;
 
 import java.util.List;
 
+import static com.trusona.forgerock.node.TrusonaOutcomes.*;
+
 @Node.Metadata(outcomeProvider = TrusonaDecisionNode.TrusonaOutcomeProvider.class,
   configClass = TrusonaDecisionNode.Config.class)
 public class TrusonaDecisionNode implements Node {
   private final Config config;
   private final CoreWrapper coreWrapper;
+
 
   @Inject
   public TrusonaDecisionNode(@Assisted Config config, CoreWrapper coreWrapper) {
@@ -34,18 +40,18 @@ public class TrusonaDecisionNode implements Node {
     TrusonaEnvironment trusonaEnvironment = new TrusonaEnvResolver().getEnvironment();
     Trusona            trusona  = new Trusona(config.apiToken(), config.apiSecret(), trusonaEnvironment);
 
+    String webSdkConfig;
+
+    try {
+      webSdkConfig = trusona.getWebSdkConfig();
+    }
+    catch (TrusonaException e) {
+      throw new RuntimeException("Could not get Web SDK Config. Please verify your Trusona API Token", e);
+    }
   }
 
   @Override
   public Action process(TreeContext treeContext) throws NodeProcessException {
-    if (treeContext.hasCallbacks()) {
-      //Not the initial entry.
-    } else {
-      //Our first time. Send callbacks
-      return Action.send(
-
-      )
-    }
     return null;
   }
 
@@ -73,10 +79,10 @@ public class TrusonaDecisionNode implements Node {
     public List<Outcome> getOutcomes(PreferredLocales preferredLocales, JsonValue jsonValue) {
       //TODO: Localization
       return ImmutableList.of(
-        new Outcome(TrusonaficationStatus.ACCEPTED.name(), "Accepted"),
-        new Outcome(TrusonaficationStatus.EXPIRED.name(), "Expired"),
-        new Outcome(TrusonaficationStatus.REJECTED.name(), "Rejected"),
-        new Outcome(TrusonaficationStatus.INVALID.name(), "Invalid")
+        ACCEPTED_OUTCOME,
+        REJECTED_OUTCOME,
+        EXPIRED_OUTCOME,
+        ERROR_OUTCOME
       );
     }
   }
