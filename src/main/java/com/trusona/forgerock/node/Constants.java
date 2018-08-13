@@ -6,5 +6,6 @@ public class Constants {
   public static final String PAYLOAD = "payload";
   public static final String TRUSONAFICATION_ID = "trusonafication_id";
 
-  public static final String WAIT_TIME = "5000";
+  public static final String WAIT_TIME     = "5000";
+  public static final String CALLBACK_ZERO = "callback_0";
 }

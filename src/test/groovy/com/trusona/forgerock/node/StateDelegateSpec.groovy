@@ -61,7 +61,7 @@ class StateDelegateSpec extends Specification {
   def "should send WaitForState when we have a trusonafication id"() {
     given:
     def trusonaficationId = UUID.randomUUID()
-    def jsonValue = new JsonValue([ trusonaficationId: trusonaficationId.toString() ])
+    def jsonValue = new JsonValue([ trusonafication_id: trusonaficationId.toString() ])
     def externalRequestContext = new ExternalRequestContext.Builder().build()
 
     def treeContext = new TreeContext(jsonValue, externalRequestContext, [])
@@ -117,7 +117,7 @@ class StateDelegateSpec extends Specification {
 
   def "should send ErrorState when the trusonafication_id is not a UUID"() {
     given:
-    def jsonValue = new JsonValue([ trusonaficationId: "notauuid" ])
+    def jsonValue = new JsonValue([ trusonafication_id: "notauuid" ])
     def externalRequestContext = new ExternalRequestContext.Builder().build()
 
     def treeContext = new TreeContext(jsonValue, externalRequestContext, [])

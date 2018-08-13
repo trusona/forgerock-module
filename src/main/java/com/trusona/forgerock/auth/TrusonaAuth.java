@@ -24,6 +24,8 @@ import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
 
+import static com.trusona.forgerock.node.Constants.CALLBACK_ZERO;
+
 
 public class TrusonaAuth extends AMLoginModule {
   private static final String TRUSONA_API_TOKEN = "trusona-api-token";
@@ -80,7 +82,7 @@ public class TrusonaAuth extends AMLoginModule {
     this.trusonaAuth = new TrusonaAuthImpl(
       new Trusonaficator(trusona, action, resource),
       new DefaultCallbackParser(),
-      new CallbackFactory(webSdkConfig, deeplinkUrl, "callback_0"),
+      new CallbackFactory(webSdkConfig, deeplinkUrl, CALLBACK_ZERO),
       new DefaultPrincipalMapper(trusonaClient, new IdentityFinder(userAliasSet, getRequestOrg())),
       this::replaceCallback
     );

@@ -10,6 +10,7 @@ import org.forgerock.json.JsonValue
 import org.forgerock.openam.authentication.callbacks.PollingWaitCallback
 import spock.lang.Specification
 
+import static com.trusona.forgerock.node.Constants.TRUSONAFICATION_ID
 import static com.trusona.forgerock.node.TrusonaOutcomes.ERROR_OUTCOME
 
 class TrucodeStateSpec extends Specification {
@@ -53,7 +54,7 @@ class TrucodeStateSpec extends Specification {
     payload << [ null, "", "   " ]
   }
 
-  def "saves the trusonaficationId in the shared state"() {
+  def "saves the trusonafication ID in the shared state"() {
     given:
     def trusonaficationId = UUID.randomUUID()
     authenticator.createTrusonafication(_) >> trusonaficationId
@@ -62,7 +63,7 @@ class TrucodeStateSpec extends Specification {
     def res = sut.get()
 
     then:
-    res.sharedState.get("trusonaficationId").asString() == trusonaficationId.toString()
+    res.sharedState.get(TRUSONAFICATION_ID).asString() == trusonaficationId.toString()
   }
 
   def "sends a ScriptTextCallback and a RedirectCallback when a payload is present"() {

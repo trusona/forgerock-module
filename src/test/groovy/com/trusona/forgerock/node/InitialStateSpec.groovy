@@ -7,6 +7,11 @@ import com.trusona.forgerock.auth.callback.CallbackParser
 import retrofit2.Call
 import spock.lang.Specification
 
+import static com.trusona.forgerock.node.Constants.ERROR
+import static com.trusona.forgerock.node.Constants.PAYLOAD
+import static com.trusona.forgerock.node.Constants.TRUCODE_ID
+import static com.trusona.forgerock.node.Constants.TRUSONAFICATION_ID
+
 class InitialStateSpec extends Specification {
 
   CallbackFactory callbackFactory = Mock(CallbackFactory)
@@ -23,9 +28,9 @@ class InitialStateSpec extends Specification {
     then:
     res.sendingCallbacks()
     res.callbacks.findIndexOf { cb -> cb instanceof ScriptTextOutputCallback && cb.message == "app.run();" } == 0
-    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == "trucodeId" } == 1
-    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == "error" } == 2
-    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == "payload" } == 3
-    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == "trusonaficationId" } == 4
+    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == TRUCODE_ID } == 1
+    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == ERROR } == 2
+    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == PAYLOAD } == 3
+    res.callbacks.findIndexOf { cb -> cb instanceof HiddenValueCallback && cb.id == TRUSONAFICATION_ID } == 4
   }
 }

@@ -2,16 +2,12 @@ package com.trusona.forgerock.node;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.sun.identity.authentication.callbacks.HiddenValueCallback;
 import com.sun.identity.sm.RequiredValueValidator;
 import com.trusona.forgerock.auth.TrusonaEnvResolver;
-import com.trusona.forgerock.auth.authenticator.Authenticator;
 import com.trusona.forgerock.auth.authenticator.Trusonaficator;
-import com.trusona.forgerock.auth.callback.CallbackParser;
-import com.trusona.forgerock.auth.callback.DefaultCallbackParser;
+import com.trusona.forgerock.auth.callback.CallbackFactory;
 import com.trusona.sdk.Trusona;
 import com.trusona.sdk.TrusonaEnvironment;
-import com.trusona.sdk.resources.dto.TrusonaficationStatus;
 import com.trusona.sdk.resources.exception.TrusonaException;
 import org.forgerock.guava.common.collect.ImmutableList;
 import org.forgerock.json.JsonValue;
@@ -23,6 +19,7 @@ import org.forgerock.util.i18n.PreferredLocales;
 
 import java.util.List;
 
+import static com.trusona.forgerock.node.Constants.CALLBACK_ZERO;
 import static com.trusona.forgerock.node.TrusonaOutcomes.*;
 
 @Node.Metadata(outcomeProvider = TrusonaDecisionNode.TrusonaOutcomeProvider.class,
@@ -30,6 +27,7 @@ import static com.trusona.forgerock.node.TrusonaOutcomes.*;
 public class TrusonaDecisionNode implements Node {
   private final Config config;
   private final CoreWrapper coreWrapper;
+  private final StateDelegate stateDelegate;
 
 
   @Inject
@@ -48,11 +46,17 @@ public class TrusonaDecisionNode implements Node {
     catch (TrusonaException e) {
       throw new RuntimeException("Could not get Web SDK Config. Please verify your Trusona API Token", e);
     }
+
+    stateDelegate = new StateDelegate(
+      new CallbackFactory(webSdkConfig, config.deeplinkUrl(), CALLBACK_ZERO),
+      new Trusonaficator(trusona, config.action(), config.resource()),
+      trusona
+      );
   }
 
   @Override
   public Action process(TreeContext treeContext) throws NodeProcessException {
-    return null;
+    return stateDelegate.getState(treeContext).get();
   }
 
   interface Config {
