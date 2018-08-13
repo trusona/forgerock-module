@@ -1,6 +1,7 @@
 package com.trusona.forgerock.node;
 
 import com.sun.identity.shared.debug.Debug;
+import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.sdk.resources.TrusonaApi;
 import com.trusona.sdk.resources.dto.TrusonaficationResult;
 import com.trusona.sdk.resources.exception.TrusonaException;
@@ -22,10 +23,10 @@ public class WaitForState implements Supplier<Action> {
   private final UUID       trusonaficationId;
   private final Debug      debug;
 
-  public WaitForState(TrusonaApi trusona, UUID trusonaficationId, Debug debug) {
+  public WaitForState(TrusonaApi trusona, UUID trusonaficationId) {
     this.trusona = trusona;
     this.trusonaficationId = trusonaficationId;
-    this.debug = debug;
+    this.debug = TrusonaDebug.getInstance();
   }
 
   @Override

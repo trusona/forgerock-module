@@ -13,9 +13,8 @@ class WaitForStateSpec extends Specification {
 
   TrusonaApi mockTrusona = Mock(TrusonaApi)
   UUID trusonaficationId = UUID.randomUUID()
-  Debug debug = Mock(Debug)
 
-  WaitForState sut = new WaitForState(mockTrusona, trusonaficationId, debug)
+  WaitForState sut = new WaitForState(mockTrusona, trusonaficationId)
 
   def mockResult(TrusonaficationStatus status, String userIdentifier) {
     mockTrusona.getTrusonaficationResult(trusonaficationId) >>

@@ -1,6 +1,7 @@
 package com.trusona.forgerock.node;
 
 import com.sun.identity.shared.debug.Debug;
+import com.trusona.forgerock.auth.TrusonaDebug;
 import org.apache.commons.lang3.StringUtils;
 import org.forgerock.openam.auth.node.api.Action;
 
@@ -16,6 +17,10 @@ public class ErrorState implements Supplier<Action> {
   public ErrorState(String error, Debug debug) {
     this.error = error;
     this.debug = debug;
+  }
+
+  public ErrorState(String error) {
+    this(error, TrusonaDebug.getInstance());
   }
 
   @Override
