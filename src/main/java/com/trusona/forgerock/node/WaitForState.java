@@ -11,14 +11,13 @@ import org.forgerock.openam.authentication.callbacks.PollingWaitCallback;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static com.trusona.forgerock.node.Constants.WAIT_TIME;
 import static com.trusona.forgerock.node.TrusonaOutcomes.*;
 import static com.trusona.sdk.resources.dto.TrusonaficationStatus.EXPIRED;
 import static com.trusona.sdk.resources.dto.TrusonaficationStatus.IN_PROGRESS;
 import static com.trusona.sdk.resources.dto.TrusonaficationStatus.REJECTED;
 
 public class WaitForState implements Supplier<Action> {
-  private static final String WAIT_TIME = "5000";
-
   private final TrusonaApi trusona;
   private final UUID       trusonaficationId;
   private final Debug      debug;

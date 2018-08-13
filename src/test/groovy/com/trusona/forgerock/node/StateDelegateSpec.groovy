@@ -93,4 +93,60 @@ class StateDelegateSpec extends Specification {
     then:
     state instanceof ErrorState
   }
+
+  def "should send ErrorState when the trucode_id is not a UUID"() {
+    given:
+    def uuid = UUID.randomUUID()
+    def jsonValue = new JsonValue([:])
+    def externalRequestContext = new ExternalRequestContext.Builder().build()
+
+
+    def callbackList = [new ScriptTextOutputCallback("callback"),
+                        new HiddenValueCallback("trucode_id", "not a uuid"),
+                        new HiddenValueCallback("error"),
+                        new HiddenValueCallback("payload"),
+                        new HiddenValueCallback("trusonafication_id")]
+    def treeContext = new TreeContext(jsonValue, externalRequestContext, callbackList)
+
+    when:
+    def state = sut.getState(treeContext)
+
+    then:
+    state instanceof ErrorState
+  }
+
+  def "should send ErrorState when the trusonafication_id is not a UUID"() {
+    given:
+    def jsonValue = new JsonValue([ trusonaficationId: "notauuid" ])
+    def externalRequestContext = new ExternalRequestContext.Builder().build()
+
+    def treeContext = new TreeContext(jsonValue, externalRequestContext, [])
+
+    when:
+    def state = sut.getState(treeContext)
+
+    then:
+    state instanceof ErrorState
+  }
+
+  def "should send ErrorSTate when we get nonsensical callbacks"() {
+    given:
+    def uuid = UUID.randomUUID()
+    def jsonValue = new JsonValue([:])
+    def externalRequestContext = new ExternalRequestContext.Builder().build()
+
+
+    def callbackList = [new ScriptTextOutputCallback("callback"),
+                        new HiddenValueCallback("trucode_id223", uuid.toString()),
+                        new HiddenValueCallback("fizzbuzz"),
+                        new HiddenValueCallback("foobar"),
+                        new HiddenValueCallback("something like a trusonafication")]
+    def treeContext = new TreeContext(jsonValue, externalRequestContext, callbackList)
+
+    when:
+    def state = sut.getState(treeContext)
+
+    then:
+    state instanceof ErrorState
+  }
 }

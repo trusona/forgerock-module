@@ -3,7 +3,7 @@ package com.trusona.forgerock.node
 import org.forgerock.openam.core.CoreWrapper
 import spock.lang.Specification
 
-class TrusonaDecisionNodeTest extends Specification {
+class TrusonaDecisionNodeSpec extends Specification {
 
   TrusonaDecisionNode.Config config
   CoreWrapper coreWrapper

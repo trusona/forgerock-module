@@ -6,6 +6,8 @@ import org.forgerock.openam.auth.node.api.Action;
 
 import java.util.function.Supplier;
 
+import static com.trusona.forgerock.node.Constants.*;
+
 public class InitialState implements Supplier<Action> {
   private final CallbackFactory callbackFactory;
 
@@ -17,10 +19,10 @@ public class InitialState implements Supplier<Action> {
   public Action get() {
     return Action.send(
       callbackFactory.makeScriptCallback("app.run();"),
-      new HiddenValueCallback("trucodeId"),
-      new HiddenValueCallback("error"),
-      new HiddenValueCallback("payload"),
-      new HiddenValueCallback("trusonaficationId")
+      new HiddenValueCallback(TRUCODE_ID),
+      new HiddenValueCallback(ERROR),
+      new HiddenValueCallback(PAYLOAD),
+      new HiddenValueCallback(TRUSONAFICATION_ID)
     ).build();
   }
 }

@@ -13,11 +13,11 @@ import org.forgerock.openam.authentication.callbacks.PollingWaitCallback;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static com.trusona.forgerock.node.Constants.TRUSONAFICATION_ID;
+import static com.trusona.forgerock.node.Constants.WAIT_TIME;
 import static com.trusona.forgerock.node.TrusonaOutcomes.ERROR_OUTCOME;
 
 public class TrucodeState implements Supplier<Action> {
-  private static final String WAIT_TIME = "5000"; //TODO: Deduplicate this.
-  private static final String TRUSONAFICATION_ID = "trusonaficationId";
   private final Authenticator authenticator;
   private final CallbackFactory callbackFactory;
   private final JsonValue currentState;

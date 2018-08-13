@@ -1,10 +1,11 @@
 package com.trusona.forgerock.node;
 
 import com.sun.identity.authentication.callbacks.HiddenValueCallback;
+import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.forgerock.auth.authenticator.Authenticator;
 import com.trusona.forgerock.auth.callback.CallbackFactory;
-import com.trusona.forgerock.auth.callback.DefaultCallbackParser;
 import com.trusona.sdk.resources.TrusonaApi;
+import org.apache.commons.lang3.StringUtils;
 import org.forgerock.openam.auth.node.api.Action;
 import org.forgerock.openam.auth.node.api.TreeContext;
 
@@ -14,6 +15,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static com.trusona.forgerock.node.Constants.*;
 
 public class StateDelegate {
   private final CallbackFactory       callbackFactory;
@@ -28,25 +31,39 @@ public class StateDelegate {
 
   public Supplier<Action> getState(TreeContext treeContext) {
 
-    if (treeContext.sharedState.isDefined("trusonaficationId")) {
-      UUID trusonaficationId = UUID.fromString(treeContext.sharedState.get("trusonaficationId").asString());
-      return new WaitForState(trusona, trusonaficationId);
+    if (treeContext.sharedState.isDefined(TRUSONAFICATION_ID)) {
+      Optional<UUID> trusonaficationId = parseUUID(treeContext.sharedState.get(TRUSONAFICATION_ID).asString());
+
+      return trusonaficationId
+        .map(t -> (Supplier<Action>) new WaitForState(trusona,t))
+        .orElse(new ErrorState("A trusonafication ID was saved in the session state, but it is not a valid UUID"));
     }
+
+    Supplier<Action> state = new ErrorState("We received unexpected input. Please try again.");
 
     List<? extends Callback> callbackList = treeContext.getAllCallbacks();
-    if (callbackList.size() == 5) {
-      Optional<String> trucodeCallback = getHiddenValueCallback(treeContext, "trucode_id");
-      Optional<String> payloadCallback = getHiddenValueCallback(treeContext, "payload");
-      Optional<String> errorCallback = getHiddenValueCallback(treeContext, "error");
+    if (callbackList.isEmpty()) {
+      state = new InitialState(callbackFactory);
+    } else if (callbackList.size() == 5) {
+      Optional<String> errorCallback = getHiddenValueCallback(treeContext, ERROR)
+        .filter(StringUtils::isNotBlank);
 
+      if (errorCallback.isPresent()) {
+        return new ErrorState(errorCallback.get());
+      }
 
-      Optional<Supplier<Action>> state = errorCallback.map(ErrorState::new);
+      String payload = getHiddenValueCallback(treeContext, PAYLOAD)
+        .orElse(null);
 
-      return state.orElse(new TrucodeState(authenticator, callbackFactory, treeContext.sharedState,
-        UUID.fromString(trucodeCallback.get()),
-        payloadCallback.orElse(null)));
+      Optional<UUID> trucodeId = getHiddenValueCallback(treeContext, TRUCODE_ID)
+        .flatMap(this::parseUUID);
+
+      if (trucodeId.isPresent()) {
+        state = new TrucodeState(authenticator, callbackFactory, treeContext.sharedState, trucodeId.get(), payload);
+      }
     }
-    return new InitialState(callbackFactory);
+
+    return state;
   }
 
   private Optional<String> getHiddenValueCallback(TreeContext treeContext, String id) {
@@ -58,5 +75,17 @@ public class StateDelegate {
       .map(cb -> Optional.ofNullable(cb.getValue()))
       .flatMap(o -> o.map(Stream::of).orElse(Stream.empty()))
       .findFirst();
+  }
+
+  private Optional<UUID> parseUUID(String s) {
+    Optional<UUID> uuid = Optional.empty();
+
+    try {
+      uuid = Optional.of(UUID.fromString(s));
+    } catch (IllegalArgumentException e) {
+      TrusonaDebug.getInstance().error("Error parsing UUID", e);
+    }
+
+    return uuid;
   }
 }

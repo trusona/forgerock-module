@@ -39,6 +39,7 @@ class TrucodeStateSpec extends Specification {
 
   def "send a PollingWaitCallback when there is no payload"() {
     given:
+    sut = new TrucodeState(authenticator, callbackFactory, new JsonValue([:]), trucodeId, payload)
     authenticator.createTrusonafication(_ as TrucodeIdCallback) >> UUID.randomUUID()
 
     when:
@@ -47,6 +48,9 @@ class TrucodeStateSpec extends Specification {
     then:
     res.sendingCallbacks()
     res.callbacks[0] instanceof PollingWaitCallback
+
+    where:
+    payload << [ null, "", "   " ]
   }
 
   def "saves the trusonaficationId in the shared state"() {
