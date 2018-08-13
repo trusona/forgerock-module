@@ -30,6 +30,8 @@ public class StateDelegate {
   }
 
   public Supplier<Action> getState(TreeContext treeContext) {
+    TrusonaDebug.getInstance().message("in getState() with {} callbacks", treeContext.getAllCallbacks().size());
+    TrusonaDebug.getInstance().message("sharedState => {}", treeContext.sharedState);
 
     if (treeContext.sharedState.isDefined(TRUSONAFICATION_ID)) {
       Optional<UUID> trusonaficationId = parseUUID(treeContext.sharedState.get(TRUSONAFICATION_ID).asString());
