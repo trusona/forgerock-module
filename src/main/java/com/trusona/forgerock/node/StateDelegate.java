@@ -81,8 +81,8 @@ public class StateDelegate {
     return treeContext.getAllCallbacks().stream()
       .filter(cb -> cb instanceof HiddenValueCallback)
       .map(cb -> (HiddenValueCallback) cb)
-      .filter(cb -> cb.getId() == id)
-      .filter(cb -> ! cb.getId().equals(cb.getValue())) //Bug in ForgeRock that sets value == id when there is no value
+      .filter(cb -> hasId(cb, id))
+      .filter(this::valueIsNotId) //Bug in ForgeRock that sets value == id when there is no value
       .map(cb -> Optional.ofNullable(cb.getValue()))
       .flatMap(o -> o.map(Stream::of).orElse(Stream.empty()))
       .findFirst();
@@ -98,5 +98,17 @@ public class StateDelegate {
     }
 
     return uuid;
+  }
+
+  private boolean hasId(HiddenValueCallback cb, String id) {
+    boolean result = cb.getId().equals(id);
+    debug.message("HiddenValueCallback[id={}, value={}] hasId => {}", cb.getId(), cb.getValue(), result);
+    return result;
+  }
+
+  private boolean valueIsNotId(HiddenValueCallback cb) {
+    boolean result = ! cb.getId().equals(cb.getValue());
+    debug.message("HiddenValueCallback[id={}, value={}] valueIsNotId => {}", cb.getId(), cb.getValue(), result);
+    return result;
   }
 }

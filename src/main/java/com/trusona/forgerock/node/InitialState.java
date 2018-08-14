@@ -1,6 +1,7 @@
 package com.trusona.forgerock.node;
 
 import com.sun.identity.authentication.callbacks.HiddenValueCallback;
+import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.forgerock.auth.callback.CallbackFactory;
 import org.forgerock.openam.auth.node.api.Action;
 
@@ -17,6 +18,7 @@ public class InitialState implements Supplier<Action> {
 
   @Override
   public Action get() {
+    TrusonaDebug.getInstance().message("In InitialState");
     return Action.send(
       callbackFactory.makeScriptCallback("app.run();"),
       new HiddenValueCallback(TRUCODE_ID),

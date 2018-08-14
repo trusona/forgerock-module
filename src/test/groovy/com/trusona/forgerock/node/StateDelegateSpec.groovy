@@ -11,6 +11,11 @@ import org.forgerock.openam.auth.node.api.ExternalRequestContext
 import org.forgerock.openam.auth.node.api.TreeContext
 import spock.lang.Specification
 
+import static com.trusona.forgerock.node.Constants.ERROR
+import static com.trusona.forgerock.node.Constants.PAYLOAD
+import static com.trusona.forgerock.node.Constants.TRUCODE_ID
+import static com.trusona.forgerock.node.Constants.TRUSONAFICATION_ID
+
 class StateDelegateSpec extends Specification {
 
   StateDelegate sut
@@ -45,10 +50,10 @@ class StateDelegateSpec extends Specification {
 
 
     def callbackList = [new ScriptTextOutputCallback("callback"),
-                        new HiddenValueCallback("trucode_id", uuid.toString()),
-                        new HiddenValueCallback("error"),
-                        new HiddenValueCallback("payload"),
-                        new HiddenValueCallback("trusonafication_id")]
+                        new HiddenValueCallback(TRUCODE_ID, uuid.toString()),
+                        new HiddenValueCallback(ERROR),
+                        new HiddenValueCallback(PAYLOAD),
+                        new HiddenValueCallback(TRUSONAFICATION_ID)]
     def treeContext = new TreeContext(jsonValue, externalRequestContext, callbackList)
 
     when:
@@ -61,7 +66,7 @@ class StateDelegateSpec extends Specification {
   def "should send WaitForState when we have a trusonafication id"() {
     given:
     def trusonaficationId = UUID.randomUUID()
-    def jsonValue = new JsonValue([ trusonafication_id: trusonaficationId.toString() ])
+    def jsonValue = new JsonValue([ trusonaficationId: trusonaficationId.toString() ])
     def externalRequestContext = new ExternalRequestContext.Builder().build()
 
     def treeContext = new TreeContext(jsonValue, externalRequestContext, [])
@@ -81,10 +86,10 @@ class StateDelegateSpec extends Specification {
 
 
     def callbackList = [new ScriptTextOutputCallback("callback"),
-                        new HiddenValueCallback("trucode_id", uuid.toString()),
-                        new HiddenValueCallback("error", "some error"),
-                        new HiddenValueCallback("payload"),
-                        new HiddenValueCallback("trusonafication_id")]
+                        new HiddenValueCallback(TRUCODE_ID, uuid.toString()),
+                        new HiddenValueCallback(ERROR, "some error"),
+                        new HiddenValueCallback(PAYLOAD),
+                        new HiddenValueCallback(TRUSONAFICATION_ID)]
     def treeContext = new TreeContext(jsonValue, externalRequestContext, callbackList)
 
     when:
@@ -102,10 +107,10 @@ class StateDelegateSpec extends Specification {
 
 
     def callbackList = [new ScriptTextOutputCallback("callback"),
-                        new HiddenValueCallback("trucode_id", "not a uuid"),
-                        new HiddenValueCallback("error"),
-                        new HiddenValueCallback("payload"),
-                        new HiddenValueCallback("trusonafication_id")]
+                        new HiddenValueCallback(TRUCODE_ID, "not a uuid"),
+                        new HiddenValueCallback(ERROR),
+                        new HiddenValueCallback(PAYLOAD),
+                        new HiddenValueCallback(TRUSONAFICATION_ID)]
     def treeContext = new TreeContext(jsonValue, externalRequestContext, callbackList)
 
     when:
@@ -117,7 +122,7 @@ class StateDelegateSpec extends Specification {
 
   def "should send ErrorState when the trusonafication_id is not a UUID"() {
     given:
-    def jsonValue = new JsonValue([ trusonafication_id: "notauuid" ])
+    def jsonValue = new JsonValue([ trusonaficationId: "notauuid" ])
     def externalRequestContext = new ExternalRequestContext.Builder().build()
 
     def treeContext = new TreeContext(jsonValue, externalRequestContext, [])

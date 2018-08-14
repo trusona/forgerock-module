@@ -30,6 +30,7 @@ public class WaitForState implements Supplier<Action> {
 
   @Override
   public Action get() {
+    debug.message("in WaitForState");
     try {
      return actionForResult(trusona.getTrusonaficationResult(trusonaficationId)).build();
     }

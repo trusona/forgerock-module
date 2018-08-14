@@ -34,6 +34,7 @@ public class TrucodeState implements Supplier<Action> {
 
   @Override
   public Action get() {
+    TrusonaDebug.getInstance().message("In TrucodeState");
     Action.ActionBuilder action = Action.goTo(ERROR_OUTCOME.id);
     JsonValue newState = currentState.copy();
 
