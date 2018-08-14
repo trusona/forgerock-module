@@ -325,6 +325,10 @@
   </repositories>
   <pluginRepositories>
     <pluginRepository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
       <id>bintray-jfrog</id>
       <url>https://dl.bintray.com/jfrog/jfrog-jars</url>
     </pluginRepository>
