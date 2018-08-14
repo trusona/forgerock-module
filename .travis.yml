@@ -7,14 +7,14 @@ cache:
   - $HOME/.m2
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_0d3d32f76180_key -iv $encrypted_0d3d32f76180_iv -in data/settings.xml.enc -out data/settings.xml -d
-  - ./scripts/env.sh
+  - ./scripts/npm-settings.sh
+  - ./scripts/maven-settings.sh
 
 before_deploy:
   - export PATH=$PATH:$HOME/.local/bin
 
 script:
-  - mvn package
+  - mvn -s data/settings.xml package
 
 deploy:
   - provider: script
