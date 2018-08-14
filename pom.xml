@@ -299,8 +299,16 @@
 
   <repositories>
     <repository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
       <id>trusona-sdk-releases</id>
       <url>https://trusona.jfrog.io/trusona/sdk-releases</url>
+    </repository>
+    <repository>
+      <id>trusona-sdk-snapshots</id>
+      <url>https://trusona.jfrog.io/trusona/sdk-snapshots</url>
     </repository>
     <repository>
       <id>openam-dependencies</id>
