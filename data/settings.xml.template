@@ -9,6 +9,11 @@
       <password>${artifactoryPassword}</password>
     </server>
     <server>
+      <id>trusona-sdk-snapshots</id>
+      <username>${artifactoryUsername}</username>
+      <password>${artifactoryPassword}</password>
+    </server>
+    <server>
       <id>openam-dependencies</id>
       <username>${forgerockMavenUsername}</username>
       <password>${forgerockMavenPassword}</password>
