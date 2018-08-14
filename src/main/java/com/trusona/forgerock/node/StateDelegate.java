@@ -1,6 +1,7 @@
 package com.trusona.forgerock.node;
 
 import com.sun.identity.authentication.callbacks.HiddenValueCallback;
+import com.sun.identity.shared.debug.Debug;
 import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.forgerock.auth.authenticator.Authenticator;
 import com.trusona.forgerock.auth.callback.CallbackFactory;
@@ -10,6 +11,7 @@ import org.forgerock.openam.auth.node.api.Action;
 import org.forgerock.openam.auth.node.api.TreeContext;
 
 import javax.security.auth.callback.Callback;
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,16 +24,18 @@ public class StateDelegate {
   private final CallbackFactory       callbackFactory;
   private final Authenticator         authenticator;
   private final TrusonaApi            trusona;
+  private final Debug                  debug;
 
   public StateDelegate(CallbackFactory callbackFactory, Authenticator authenticator, TrusonaApi trusona) {
     this.callbackFactory = callbackFactory;
     this.authenticator = authenticator;
     this.trusona = trusona;
+    this.debug = TrusonaDebug.getInstance();
   }
 
   public Supplier<Action> getState(TreeContext treeContext) {
-    TrusonaDebug.getInstance().message("in getState() with {} callbacks", treeContext.getAllCallbacks().size());
-    TrusonaDebug.getInstance().message("sharedState => {}", treeContext.sharedState);
+    debug.message("in getState() with {} callbacks", treeContext.getAllCallbacks().size());
+    debug.message("sharedState => {}", treeContext.sharedState);
 
     if (treeContext.sharedState.isDefined(TRUSONAFICATION_ID)) {
       Optional<UUID> trusonaficationId = parseUUID(treeContext.sharedState.get(TRUSONAFICATION_ID).asString());
@@ -59,6 +63,11 @@ public class StateDelegate {
 
       Optional<UUID> trucodeId = getHiddenValueCallback(treeContext, TRUCODE_ID)
         .flatMap(this::parseUUID);
+
+      debug.message("trucode_id => {}", trucodeId.map(UUID::toString).orElse("EMPTY"));
+      debug.message("error => {}", errorCallback.orElse("EMPTY"));
+      debug.message("payload => {}", Optional.ofNullable(payload).orElse("EMPTY"));
+      debug.message("trusonafication_id => {}", getHiddenValueCallback(treeContext, TRUSONAFICATION_ID).orElse("EMPTY"));
 
       if (trucodeId.isPresent()) {
         state = new TrucodeState(authenticator, callbackFactory, treeContext.sharedState, trucodeId.get(), payload);

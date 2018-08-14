@@ -1,1 +1,2 @@
 com.trusona.forgerock.auth.TrusonaAuthPlugin
+com.trusona.forgerock.node.TrusonaDecisionNodePlugin

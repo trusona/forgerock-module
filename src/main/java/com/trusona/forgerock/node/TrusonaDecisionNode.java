@@ -36,7 +36,7 @@ public class TrusonaDecisionNode implements Node {
     this.coreWrapper = coreWrapper;
 
     TrusonaEnvironment trusonaEnvironment = new TrusonaEnvResolver().getEnvironment();
-    Trusona            trusona  = new Trusona(config.apiToken(), config.apiSecret(), trusonaEnvironment);
+    Trusona            trusona  = new Trusona(config.apiToken(), new String(config.apiSecret()), trusonaEnvironment);
 
     String webSdkConfig;
 
@@ -66,7 +66,7 @@ public class TrusonaDecisionNode implements Node {
 
     @Attribute(order = 200, validators = {RequiredValueValidator.class})
     @Password
-    String apiSecret();
+    char[] apiSecret();
 
     @Attribute(order = 300, validators = {RequiredValueValidator.class})
     String action();

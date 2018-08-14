@@ -6,7 +6,8 @@ import org.forgerock.openam.auth.node.api.Node;
 import org.forgerock.openam.plugins.PluginException;
 import org.forgerock.openam.sm.AnnotatedServiceRegistry;
 
-import static org.codehaus.groovy.runtime.InvokerHelper.asList;
+import java.util.Collections;
+
 
 public class TrusonaDecisionNodePlugin extends AbstractNodeAmPlugin {
 
@@ -31,6 +32,6 @@ public class TrusonaDecisionNodePlugin extends AbstractNodeAmPlugin {
 
     @Override
     protected Iterable<? extends Class<? extends Node>> getNodes() {
-        return asList(TrusonaDecisionNode.class);
+        return Collections.singletonList(TrusonaDecisionNode.class);
     }
 }
