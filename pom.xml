@@ -298,13 +298,9 @@
   </dependencies>
 
   <repositories>
-    <!--<repository>-->
-      <!--<id>trusona-sdk-releases</id>-->
-      <!--<url>https://trusona.jfrog.io/trusona/sdk-releases</url>-->
-    <!--</repository>-->
     <repository>
-      <id>trusona-sdk-snapshots</id>
-      <url>https://trusona.jfrog.io/trusona/sdk-snapshots</url>
+      <id>trusona-sdk-releases</id>
+      <url>https://trusona.jfrog.io/trusona/sdk-releases</url>
     </repository>
     <repository>
       <id>openam-dependencies</id>
@@ -318,10 +314,6 @@
       <id>forgerock-releases</id>
       <url>https://maven.forgerock.org/repo/releases</url>
     </repository>
-    <!--<repository>-->
-      <!--<id>bintray-jfrog</id>-->
-      <!--<url>https://dl.bintray.com/jfrog/jfrog-jars</url>-->
-    <!--</repository>-->
   </repositories>
   <pluginRepositories>
     <pluginRepository>
