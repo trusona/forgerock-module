@@ -2,9 +2,9 @@ package com.trusona.forgerock.node
 
 import com.sun.identity.authentication.callbacks.HiddenValueCallback
 import com.sun.identity.authentication.callbacks.ScriptTextOutputCallback
+import com.trusona.client.TrusonaClient
 import com.trusona.forgerock.auth.authenticator.Authenticator
 import com.trusona.forgerock.auth.callback.CallbackFactory
-import com.trusona.forgerock.auth.callback.DefaultCallbackParser
 import com.trusona.sdk.resources.TrusonaApi
 import org.forgerock.json.JsonValue
 import org.forgerock.openam.auth.node.api.ExternalRequestContext
@@ -24,8 +24,10 @@ class StateDelegateSpec extends Specification {
     def callbackFactory = Mock(CallbackFactory)
     def authenticator = Mock(Authenticator)
     def trusona = Mock(TrusonaApi)
+    def trusonaClient = Mock(TrusonaClient)
+    def orgFromRealm = {r -> "organization"}
 
-    sut = new StateDelegate(callbackFactory, authenticator, trusona)
+    sut = new StateDelegate(callbackFactory, authenticator, trusona, trusonaClient, Collections.emptySet(), orgFromRealm)
   }
 
   def "should send initial state for new request"() {

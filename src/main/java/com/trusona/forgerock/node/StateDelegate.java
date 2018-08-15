@@ -2,34 +2,51 @@ package com.trusona.forgerock.node;
 
 import com.sun.identity.authentication.callbacks.HiddenValueCallback;
 import com.sun.identity.shared.debug.Debug;
+import com.trusona.client.TrusonaClient;
 import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.forgerock.auth.authenticator.Authenticator;
 import com.trusona.forgerock.auth.callback.CallbackFactory;
+import com.trusona.forgerock.auth.principal.DefaultPrincipalMapper;
+import com.trusona.forgerock.auth.principal.IdentityFinder;
+import com.trusona.forgerock.auth.principal.PrincipalMapper;
 import com.trusona.sdk.resources.TrusonaApi;
 import org.apache.commons.lang3.StringUtils;
 import org.forgerock.openam.auth.node.api.Action;
+import org.forgerock.openam.auth.node.api.SharedStateConstants;
 import org.forgerock.openam.auth.node.api.TreeContext;
+import org.forgerock.openam.core.CoreWrapper;
 
 import javax.security.auth.callback.Callback;
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.trusona.forgerock.node.Constants.*;
+import static org.forgerock.openam.auth.node.api.SharedStateConstants.*;
 
 public class StateDelegate {
-  private final CallbackFactory       callbackFactory;
-  private final Authenticator         authenticator;
-  private final TrusonaApi            trusona;
-  private final Debug                  debug;
+  private final CallbackFactory callbackFactory;
+  private final Authenticator   authenticator;
+  private final TrusonaApi      trusona;
+  private final TrusonaClient   trusonaClient;
+  private final Set<String>     userAliases;
+  private final Function<String, String>        orgFromRealm;
+  private final Debug           debug;
 
-  public StateDelegate(CallbackFactory callbackFactory, Authenticator authenticator, TrusonaApi trusona) {
+  public StateDelegate(CallbackFactory callbackFactory, Authenticator authenticator,
+                       TrusonaApi trusona, TrusonaClient trusonaClient,
+                       Set<String> userAliases, Function<String, String> orgFromRealm) {
     this.callbackFactory = callbackFactory;
     this.authenticator = authenticator;
     this.trusona = trusona;
+    this.trusonaClient = trusonaClient;
+    this.userAliases = userAliases;
+    this.orgFromRealm = orgFromRealm;
     this.debug = TrusonaDebug.getInstance();
   }
 
@@ -40,8 +57,12 @@ public class StateDelegate {
     if (treeContext.sharedState.isDefined(TRUSONAFICATION_ID)) {
       Optional<UUID> trusonaficationId = parseUUID(treeContext.sharedState.get(TRUSONAFICATION_ID).asString());
 
+      String realm = orgFromRealm.apply(treeContext.sharedState.get(REALM).asString());
+      IdentityFinder identityFinder = new IdentityFinder(userAliases, realm);
+      PrincipalMapper principalMapper = new DefaultPrincipalMapper(trusonaClient, identityFinder);
+
       return trusonaficationId
-        .map(t -> (Supplier<Action>) new WaitForState(trusona,t))
+        .map(t -> (Supplier<Action>) new WaitForState(trusona, principalMapper, t, treeContext.sharedState))
         .orElse(new ErrorState("A trusonafication ID was saved in the session state, but it is not a valid UUID"));
     }
 

@@ -1,9 +1,12 @@
 package com.trusona.forgerock.node
 
-import com.sun.identity.shared.debug.Debug
+import com.sun.identity.authentication.internal.AuthPrincipal
+import com.trusona.forgerock.auth.principal.PrincipalMapper
 import com.trusona.sdk.resources.TrusonaApi
 import com.trusona.sdk.resources.dto.TrusonaficationResult
 import com.trusona.sdk.resources.dto.TrusonaficationStatus
+import org.forgerock.json.JsonValue
+import org.forgerock.openam.auth.node.api.SharedStateConstants
 import org.forgerock.openam.authentication.callbacks.PollingWaitCallback
 import spock.lang.Specification
 
@@ -12,9 +15,10 @@ import static com.trusona.sdk.resources.dto.TrusonaficationStatus.*
 class WaitForStateSpec extends Specification {
 
   TrusonaApi mockTrusona = Mock(TrusonaApi)
+  PrincipalMapper principalMapper = Mock(PrincipalMapper)
   UUID trusonaficationId = UUID.randomUUID()
 
-  WaitForState sut = new WaitForState(mockTrusona, trusonaficationId)
+  WaitForState sut = new WaitForState(mockTrusona, principalMapper, trusonaficationId, new JsonValue([:]))
 
   def mockResult(TrusonaficationStatus status, String userIdentifier) {
     mockTrusona.getTrusonaficationResult(trusonaficationId) >>
@@ -36,7 +40,8 @@ class WaitForStateSpec extends Specification {
 
   def "should go to ACCEPTED outcome if the trusonafication was successful"() {
     given:
-    mockResult(status, "userId");
+    mockResult(status, "userId")
+    principalMapper.mapPrincipal(_) >> Optional.of(new AuthPrincipal("username"))
 
     when:
     def res = sut.get()
@@ -44,6 +49,7 @@ class WaitForStateSpec extends Specification {
     then:
     ! res.sendingCallbacks()
     res.outcome == TrusonaOutcomes.ACCEPTED_OUTCOME.id
+    res.sharedState.get(SharedStateConstants.USERNAME).asString() == "username"
 
     where:
     status << [ ACCEPTED, ACCEPTED_AT_HIGHER_LEVEL ]

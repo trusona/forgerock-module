@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.trusona.forgerock.node.Constants.CALLBACK_ZERO;
+import static com.trusona.forgerock.node.Constants.ENDPOINT_URL_PRODUCTION;
+import static com.trusona.forgerock.node.Constants.ENDPOINT_URL_UAT;
 
 
 public class TrusonaAuth extends AMLoginModule {
@@ -33,9 +35,6 @@ public class TrusonaAuth extends AMLoginModule {
   private static final String TRUSONA_ACTION = "trusona-action";
   private static final String TRUSONA_RESOURCE = "trusona-resource";
   private static final String TRUSONA_DEEPLINK_URL = "trusona-deeplink-url";
-
-  private static final URL ENDPOINT_URL_UAT = staticUrl("https://api.staging.trusona.net");
-  private static final URL ENDPOINT_URL_PRODUCTION = staticUrl("https://api.trusona.net");
 
   private TrusonaAuthImpl trusonaAuth;
 
@@ -109,16 +108,5 @@ public class TrusonaAuth extends AMLoginModule {
       default:
         throw new RuntimeException("Invalid Trusona environment configured: " + trusonaEnvironment);
     }
-  }
-
-  private static URL staticUrl(String urlString) {
-    URL url;
-    try {
-      url = new URL(urlString);
-    }
-    catch (MalformedURLException e) {
-      throw new RuntimeException("Precompiled, static URL was malformed... contact Trusona and have them get their stuff together");
-    }
-    return url;
   }
 }

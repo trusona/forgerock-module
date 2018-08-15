@@ -3,6 +3,9 @@ package com.trusona.forgerock.node;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.sun.identity.sm.RequiredValueValidator;
+import com.trusona.client.TrusonaClient;
+import com.trusona.client.config.TrusonaClientConfig;
+import com.trusona.client.v1.TrusonaClientV1;
 import com.trusona.forgerock.auth.TrusonaEnvResolver;
 import com.trusona.forgerock.auth.authenticator.Trusonaficator;
 import com.trusona.forgerock.auth.callback.CallbackFactory;
@@ -17,9 +20,13 @@ import org.forgerock.openam.core.CoreWrapper;
 import org.forgerock.openam.sm.annotations.adapters.Password;
 import org.forgerock.util.i18n.PreferredLocales;
 
+import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 import static com.trusona.forgerock.node.Constants.CALLBACK_ZERO;
+import static com.trusona.forgerock.node.Constants.ENDPOINT_URL_PRODUCTION;
+import static com.trusona.forgerock.node.Constants.ENDPOINT_URL_UAT;
 import static com.trusona.forgerock.node.TrusonaOutcomes.*;
 
 @Node.Metadata(outcomeProvider = TrusonaDecisionNode.TrusonaOutcomeProvider.class,
@@ -47,10 +54,21 @@ public class TrusonaDecisionNode implements Node {
       throw new RuntimeException("Could not get Web SDK Config. Please verify your Trusona API Token", e);
     }
 
+    TrusonaClientConfig trusonaClientConfig = new TrusonaClientConfig();
+    trusonaClientConfig.setAccessToken(config.apiToken());
+    trusonaClientConfig.setMacKey(new String(config.apiSecret()));
+    trusonaClientConfig.setEndpointUrl(getEndpointUrl(trusonaEnvironment));
+
+    TrusonaClient trusonaClient = new TrusonaClientV1(trusonaClientConfig);
+
+
     stateDelegate = new StateDelegate(
       new CallbackFactory(webSdkConfig, config.deeplinkUrl(), CALLBACK_ZERO),
       new Trusonaficator(trusona, config.action(), config.resource()),
-      trusona
+      trusona,
+      trusonaClient,
+      config.userAliasList(),
+      coreWrapper::convertRealmNameToOrgName
       );
   }
 
@@ -77,6 +95,9 @@ public class TrusonaDecisionNode implements Node {
     @Attribute(order = 500)
     String deeplinkUrl();
 
+    @Attribute(order = 600)
+    Set<String> userAliasList();
+
   }
   public static class TrusonaOutcomeProvider implements OutcomeProvider {
     @Override
@@ -88,6 +109,19 @@ public class TrusonaDecisionNode implements Node {
         EXPIRED_OUTCOME,
         ERROR_OUTCOME
       );
+    }
+  }
+
+  private URL getEndpointUrl(TrusonaEnvironment trusonaEnvironment) {
+    switch (trusonaEnvironment) {
+      case UAT:
+        return ENDPOINT_URL_UAT;
+
+      case PRODUCTION:
+        return ENDPOINT_URL_PRODUCTION;
+
+      default:
+        throw new RuntimeException("Invalid Trusona environment configured: " + trusonaEnvironment);
     }
   }
 }
