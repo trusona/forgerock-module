@@ -139,12 +139,12 @@
             <configuration>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>all</shadedClassifierName>
-              <!--<relocations>-->
-                <!--<relocation>-->
-                  <!--<pattern>com.fasterxml.jackson</pattern>-->
-                  <!--<shadedPattern>trusona.com.fasterxml.jackson</shadedPattern>-->
-                <!--</relocation>-->
-              <!--</relocations>-->
+              <relocations>
+                <relocation>
+                  <pattern>com.fasterxml.jackson</pattern>
+                  <shadedPattern>trusona.com.fasterxml.jackson</shadedPattern>
+                </relocation>
+              </relocations>
             </configuration>
           </execution>
         </executions>
