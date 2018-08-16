@@ -222,6 +222,12 @@
       <artifactId>trusona-sdk-resources</artifactId>
       <version>${trusona.sdk.version}</version>
     </dependency>
+    <!-- trusona sdk resources depends on jackson databind 2.9.6, which also needs this -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.9.6</version>
+    </dependency>
     <dependency>
       <groupId>com.trusona</groupId>
       <artifactId>trusona-sdk-http</artifactId>

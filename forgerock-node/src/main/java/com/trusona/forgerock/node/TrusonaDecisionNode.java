@@ -2,10 +2,12 @@ package com.trusona.forgerock.node;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.sun.identity.sm.DNMapper;
 import com.sun.identity.sm.RequiredValueValidator;
 import com.trusona.client.TrusonaClient;
 import com.trusona.client.config.TrusonaClientConfig;
 import com.trusona.client.v1.TrusonaClientV1;
+import com.trusona.forgerock.auth.TrusonaDebug;
 import com.trusona.forgerock.auth.TrusonaEnvResolver;
 import com.trusona.forgerock.auth.authenticator.Trusonaficator;
 import com.trusona.forgerock.auth.callback.CallbackFactory;
@@ -68,7 +70,7 @@ public class TrusonaDecisionNode implements Node {
       trusona,
       trusonaClient,
       config.userAliasList(),
-      coreWrapper::convertRealmNameToOrgName
+      DNMapper::orgNameToDN
       );
   }
 
