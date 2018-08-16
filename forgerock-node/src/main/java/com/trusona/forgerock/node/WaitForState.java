@@ -13,6 +13,7 @@ import org.forgerock.openam.authentication.callbacks.PollingWaitCallback;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.forgerock.openam.authentication.callbacks.PollingWaitCallback.PollingWaitCallbackBuilder;
 
 import static com.trusona.forgerock.auth.Constants.WAIT_TIME;
 import static com.trusona.forgerock.node.TrusonaOutcomes.*;
@@ -65,7 +66,8 @@ public class WaitForState implements Supplier<Action> {
     } else if (result.getStatus().equals(EXPIRED)) {
       return Action.goTo(EXPIRED_OUTCOME.id);
     } else if (result.getStatus().equals(IN_PROGRESS)) {
-      return Action.send(new PollingWaitCallback(WAIT_TIME));
+      PollingWaitCallbackBuilder builder = new PollingWaitCallbackBuilder().withWaitTime(WAIT_TIME);
+      return Action.send(builder.build());
     } else {
       debug.error("Got an unexpected Trusonafication Result: " + result.toString());
       return Action.goTo(ERROR_OUTCOME.id);

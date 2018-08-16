@@ -12,6 +12,7 @@ import org.forgerock.openam.authentication.callbacks.PollingWaitCallback;
 
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.forgerock.openam.authentication.callbacks.PollingWaitCallback.PollingWaitCallbackBuilder;
 
 import static com.trusona.forgerock.auth.Constants.TRUSONAFICATION_ID;
 import static com.trusona.forgerock.auth.Constants.WAIT_TIME;
@@ -48,7 +49,8 @@ public class TrucodeState implements Supplier<Action> {
           callbackFactory.makeRedirectCallback(payload)
         );
       } else {
-        action = Action.send(new PollingWaitCallback(WAIT_TIME));
+        PollingWaitCallbackBuilder builder = new PollingWaitCallbackBuilder().withWaitTime(WAIT_TIME);
+        action = Action.send(builder.build());
       }
     }
     catch (AuthLoginException e) {
