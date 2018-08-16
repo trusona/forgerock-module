@@ -11,7 +11,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>forgerock-node</artifactId>
+  <artifactId>trusona-forgerock-node</artifactId>
   <version>${project.parent.version}</version>
 
   <name>Trusona ForgeRock Node</name>
@@ -155,7 +155,7 @@
   <dependencies>
     <dependency>
       <groupId>com.trusona.integration</groupId>
-      <artifactId>forgerock-common</artifactId>
+      <artifactId>trusona-forgerock-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

@@ -11,7 +11,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>forgerock-module</artifactId>
+  <artifactId>trusona-forgerock-module</artifactId>
   <version>${project.parent.version}</version>
 
   <name>Trusona ForgeRock Module</name>
@@ -155,30 +155,9 @@
   <dependencies>
     <dependency>
       <groupId>com.trusona.integration</groupId>
-      <artifactId>forgerock-common</artifactId>
+      <artifactId>trusona-forgerock-common</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-    <!--<dependency>-->
-      <!--<groupId>com.trusona</groupId>-->
-      <!--<artifactId>trusona-sdk</artifactId>-->
-      <!--<version>${trusona.sdk.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>com.trusona</groupId>-->
-      <!--<artifactId>trusona-sdk-resources</artifactId>-->
-      <!--<version>${trusona.sdk.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>com.trusona</groupId>-->
-      <!--<artifactId>trusona-sdk-http</artifactId>-->
-      <!--<version>${trusona.sdk.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>com.squareup.retrofit2</groupId>-->
-      <!--<artifactId>retrofit</artifactId>-->
-      <!--<version>${retrofit.version}</version>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>org.forgerock.am</groupId>
       <artifactId>openam-core</artifactId>
@@ -191,16 +170,6 @@
       <version>${forgerock.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.apache.commons</groupId>-->
-      <!--<artifactId>commons-lang3</artifactId>-->
-      <!--<version>${commons-lang3.version}</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>com.trusona.libs</groupId>-->
-      <!--<artifactId>trusona-client-java-sdk</artifactId>-->
-      <!--<version>2.4.1</version>-->
-    <!--</dependency>-->
 
     <!-- test dependencies -->
     <dependency>
