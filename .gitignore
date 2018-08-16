@@ -14,5 +14,6 @@ out/
 vol/
 dist/
 /node/
+/forgerock-common/node
 target/
 data/settings.xml
