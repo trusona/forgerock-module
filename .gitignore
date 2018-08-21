@@ -13,6 +13,7 @@ node_modules/
 out/
 vol/
 dist/
-node/
+/node/
+/forgerock-common/node
 target/
 data/settings.xml
