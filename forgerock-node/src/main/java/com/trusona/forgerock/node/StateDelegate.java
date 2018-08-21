@@ -10,6 +10,7 @@ import com.trusona.forgerock.auth.principal.DefaultPrincipalMapper;
 import com.trusona.forgerock.auth.principal.IdentityFinder;
 import com.trusona.forgerock.auth.principal.PrincipalMapper;
 import com.trusona.sdk.resources.TrusonaApi;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.forgerock.openam.auth.node.api.Action;
 import org.forgerock.openam.auth.node.api.TreeContext;
@@ -53,14 +54,8 @@ public class StateDelegate {
     debug.message("sharedState => {}", treeContext.sharedState);
 
     if (treeContext.sharedState.isDefined(TRUSONAFICATION_ID)) {
-      Optional<UUID> trusonaficationId = parseUUID(treeContext.sharedState.get(TRUSONAFICATION_ID).asString());
-
-      String realm = orgFromRealm.apply(treeContext.sharedState.get(REALM).asString());
-      IdentityFinder identityFinder = new IdentityFinder(userAliases, realm);
-      PrincipalMapper principalMapper = new DefaultPrincipalMapper(trusonaClient, identityFinder);
-
-      return trusonaficationId
-        .map(t -> (Supplier<Action>) new WaitForState(trusona, principalMapper, t, treeContext.sharedState))
+      return Optional.of(treeContext.sharedState.get(TRUSONAFICATION_ID).asString())
+        .map(t -> (Supplier<Action>) waitForStateFromTrusonaficationId(treeContext, t))
         .orElse(new ErrorState("A trusonafication ID was saved in the session state, but it is not a valid UUID"));
     }
 
@@ -83,6 +78,8 @@ public class StateDelegate {
       Optional<UUID> trucodeId = getHiddenValueCallback(treeContext, TRUCODE_ID)
         .flatMap(this::parseUUID);
 
+      Optional<String> trusonaficationId = getHiddenValueCallback(treeContext, TRUSONAFICATION_ID);
+
       debug.message("trucode_id => {}", trucodeId.map(UUID::toString).orElse("EMPTY"));
       debug.message("error => {}", errorCallback.orElse("EMPTY"));
       debug.message("payload => {}", Optional.ofNullable(payload).orElse("EMPTY"));
@@ -91,9 +88,27 @@ public class StateDelegate {
       if (trucodeId.isPresent()) {
         state = new TrucodeState(authenticator, callbackFactory, treeContext.sharedState, trucodeId.get(), payload);
       }
+      if (trusonaficationId.isPresent()) {
+        TrusonaDebug.getInstance().message("Truso id is present, trying to move to wait state");
+        state = waitForStateFromTrusonaficationId(treeContext, trusonaficationId.get());
+      }
     }
 
+    TrusonaDebug.getInstance().message("Dropping out of getState with state {}", state);
     return state;
+  }
+
+  private Supplier<Action> waitForStateFromTrusonaficationId(TreeContext treeContext, String trusonaficationId) {
+    Optional<UUID> trusonaficationUUID = parseUUID(trusonaficationId);
+    if (trusonaficationUUID.isPresent()) {
+      String realm = orgFromRealm.apply(treeContext.sharedState.get(REALM).asString());
+      IdentityFinder identityFinder = new IdentityFinder(userAliases, realm);
+      PrincipalMapper principalMapper = new DefaultPrincipalMapper(trusonaClient, identityFinder);
+
+      return new WaitForState(trusona, principalMapper, trusonaficationUUID.get(), treeContext.sharedState);
+    } else {
+      return new ErrorState("Error parsing UUID");
+    }
   }
 
   private Optional<String> getHiddenValueCallback(TreeContext treeContext, String id) {
