@@ -10,11 +10,9 @@ import com.trusona.forgerock.auth.principal.DefaultPrincipalMapper;
 import com.trusona.forgerock.auth.principal.IdentityFinder;
 import com.trusona.forgerock.auth.principal.PrincipalMapper;
 import com.trusona.sdk.resources.TrusonaApi;
-import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.forgerock.openam.auth.node.api.Action;
 import org.forgerock.openam.auth.node.api.TreeContext;
-import org.forgerock.openam.core.CoreWrapper;
 
 import javax.security.auth.callback.Callback;
 import java.util.List;
@@ -54,9 +52,9 @@ public class StateDelegate {
     debug.message("sharedState => {}", treeContext.sharedState);
 
     if (treeContext.sharedState.isDefined(TRUSONAFICATION_ID)) {
-      return Optional.of(treeContext.sharedState.get(TRUSONAFICATION_ID).asString())
+      return parseUUID(treeContext.sharedState.get(TRUSONAFICATION_ID).asString())
         .map(t -> (Supplier<Action>) waitForStateFromTrusonaficationId(treeContext, t))
-        .orElse(new ErrorState("A trusonafication ID was saved in the session state, but it is not a valid UUID"));
+        .orElseGet(() -> new ErrorState("A trusonafication ID was saved in the session state, but it is not a valid UUID"));
     }
 
     Supplier<Action> state = new ErrorState("We received unexpected input. Please try again.");
@@ -88,27 +86,26 @@ public class StateDelegate {
       if (trucodeId.isPresent()) {
         state = new TrucodeState(authenticator, callbackFactory, treeContext.sharedState, trucodeId.get(), payload);
       }
+
+
       if (trusonaficationId.isPresent()) {
-        TrusonaDebug.getInstance().message("Truso id is present, trying to move to wait state");
-        state = waitForStateFromTrusonaficationId(treeContext, trusonaficationId.get());
+        debug.message("Truso id is present, trying to move to wait state");
+        state = parseUUID(trusonaficationId.get())
+          .map(t -> (Supplier<Action>) waitForStateFromTrusonaficationId(treeContext, t))
+          .orElseGet(() -> new ErrorState("The trusonafication ID is not a UUID"));
       }
     }
 
-    TrusonaDebug.getInstance().message("Dropping out of getState with state {}", state);
+    debug.message("Dropping out of getState with state {}", state);
     return state;
   }
 
-  private Supplier<Action> waitForStateFromTrusonaficationId(TreeContext treeContext, String trusonaficationId) {
-    Optional<UUID> trusonaficationUUID = parseUUID(trusonaficationId);
-    if (trusonaficationUUID.isPresent()) {
+  private Supplier<Action> waitForStateFromTrusonaficationId(TreeContext treeContext, UUID trusonaficationId) {
       String realm = orgFromRealm.apply(treeContext.sharedState.get(REALM).asString());
       IdentityFinder identityFinder = new IdentityFinder(userAliases, realm);
       PrincipalMapper principalMapper = new DefaultPrincipalMapper(trusonaClient, identityFinder);
 
-      return new WaitForState(trusona, principalMapper, trusonaficationUUID.get(), treeContext.sharedState);
-    } else {
-      return new ErrorState("Error parsing UUID");
-    }
+      return new WaitForState(trusona, principalMapper, trusonaficationId, treeContext.sharedState);
   }
 
   private Optional<String> getHiddenValueCallback(TreeContext treeContext, String id) {
@@ -128,7 +125,7 @@ public class StateDelegate {
     try {
       uuid = Optional.of(UUID.fromString(s));
     } catch (IllegalArgumentException e) {
-      TrusonaDebug.getInstance().error("Error parsing UUID", e);
+      debug.error("Error parsing UUID", e);
     }
 
     return uuid;
