@@ -59,7 +59,7 @@ public class WaitForState implements Supplier<Action> {
         debug.error("Unable to find a user with TrusonaficationResult => {}", result);
       }
 
-      return action.orElse(Action.goTo(ERROR_OUTCOME.id));
+      return action.orElseGet(() -> Action.goTo(ERROR_OUTCOME.id));
       
     } else if (result.getStatus().equals(REJECTED)) {
       return Action.goTo(REJECTED_OUTCOME.id);

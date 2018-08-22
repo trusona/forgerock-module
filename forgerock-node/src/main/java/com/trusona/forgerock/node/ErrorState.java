@@ -25,7 +25,7 @@ public class ErrorState implements Supplier<Action> {
 
   @Override
   public Action get() {
-    TrusonaDebug.getInstance().message("In ErrorState");
+    debug.message("In ErrorState");
     if (StringUtils.isNotBlank(error)) {
       debug.error(error);
       return Action.goTo(ERROR_OUTCOME.id).build();
