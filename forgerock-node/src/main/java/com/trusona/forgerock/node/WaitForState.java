@@ -80,4 +80,9 @@ public class WaitForState implements Supplier<Action> {
 
     return newState;
   }
+
+  @Override
+  public String toString() {
+    return "WaitForState[trusonaficationId=" + trusonaficationId.toString() + "]";
+  }
 }

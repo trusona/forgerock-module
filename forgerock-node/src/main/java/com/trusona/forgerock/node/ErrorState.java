@@ -32,4 +32,9 @@ public class ErrorState implements Supplier<Action> {
     }
     return null;
   }
+
+  @Override
+  public String toString() {
+    return "ErrorState[" + "error=\"" + error + "\"]";
+  }
 }
