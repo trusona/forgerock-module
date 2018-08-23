@@ -42,19 +42,6 @@
   </developers>
   <contributors/>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <id>snapshots</id>
-      <name>trusona-sdk-snapshots</name>
-      <url>https://trusona.jfrog.io/trusona/sdk-public-snapshots-local</url>
-    </snapshotRepository>
-    <repository>
-      <id>central</id>
-      <name>trusona-sdk-releases</name>
-      <url>https://trusona.jfrog.io/trusona/sdk-public-releases-local</url>
-    </repository>
-  </distributionManagement>
-  
   <properties>
     <trusona.sdk.version>3.3.0</trusona.sdk.version>
     <commons-lang3.version>3.7</commons-lang3.version>
@@ -62,6 +49,57 @@
     <retrofit.version>2.4.0</retrofit.version>
     <groovy.version>2.5.0</groovy.version>
   </properties>
+
+  <build>
+    <defaultGoal>clean test</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <compilerArgument>-Xlint:all</compilerArgument>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jfrog.buildinfo</groupId>
+        <artifactId>artifactory-maven-plugin</artifactId>
+        <version>2.6.1</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>build-info</id>
+            <goals>
+              <goal>publish</goal>
+            </goals>
+            <phase>install</phase>
+            <configuration>
+              <artifactory>
+                <includeEnvVars>true</includeEnvVars>
+                <envVarsExcludePatterns>*password*,*secret*,*key*,*token*,*passphrase*</envVarsExcludePatterns>
+                <timeoutSec>60</timeoutSec>
+              </artifactory>
+              <publisher>
+                <!-- the following 3 keys are automatically picked up from the environment -->
+                <contextUrl>{{CONTEXT_REPO_ROOT}}</contextUrl>
+                <username>{{ARTIFACTORY_USERNAME}}</username>
+                <password>{{ARTIFACTORY_PASSWORD}}</password>
+                <repoKey>sdk-public-releases-local</repoKey>
+                <snapshotRepoKey>sdk-public-snapshots-local</snapshotRepoKey>
+              </publisher>
+              <buildInfo>
+                <buildName>${project.name}</buildName>
+                <buildNumber>${ciBuildNumber}</buildNumber>
+                <buildUrl>${project.url}</buildUrl>
+              </buildInfo>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <repositories>
     <repository>
