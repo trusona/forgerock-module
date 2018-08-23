@@ -42,6 +42,19 @@
   </developers>
   <contributors/>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>trusona-sdk-snapshots</name>
+      <url>https://trusona.jfrog.io/trusona/sdk-public-snapshots-local</url>
+    </snapshotRepository>
+    <repository>
+      <id>central</id>
+      <name>trusona-sdk-releases</name>
+      <url>https://trusona.jfrog.io/trusona/sdk-public-releases-local</url>
+    </repository>
+  </distributionManagement>
+  
   <properties>
     <trusona.sdk.version>3.3.0</trusona.sdk.version>
     <commons-lang3.version>3.7</commons-lang3.version>
