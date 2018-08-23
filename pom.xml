@@ -5,21 +5,13 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.trusona.integration</groupId>
-  <artifactId>trusona-forgerock</artifactId>
+    <groupId>com.trusona.integration</groupId>
+  <artifactId>trusona-forgerock-module</artifactId>
   <version>1.2.2-SNAPSHOT</version>
 
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>forgerock-common</module>
-    <module>forgerock-module</module>
-    <module>forgerock-node</module>
-  </modules>
-
-  <name>Trusona ForgeRock</name>
+  <name>Trusona ForgeRock Module</name>
   <description>
-    This is the parent package for both the Trusona ForgeRock Module and Node for ForgeRock AM that allows you to authenticate users with
+    This is the Trusona ForgeRock Module for ForgeRock AM that allows you to authenticate users with
     Trusona.
   </description>
   <url>https://github.com/trusona/forgerock-module</url>
@@ -42,13 +34,15 @@
   </developers>
   <contributors/>
 
-  <properties>
+   <properties>
+   <trusona.common.version>1.2.3-SNAPSHOT</trusona.common.version>
     <trusona.sdk.version>3.3.0</trusona.sdk.version>
     <commons-lang3.version>3.7</commons-lang3.version>
     <forgerock.version>5.5.1</forgerock.version>
     <retrofit.version>2.4.0</retrofit.version>
     <groovy.version>2.5.0</groovy.version>
   </properties>
+
 
   <build>
     <defaultGoal>clean test</defaultGoal>
@@ -62,6 +56,45 @@
           <compilerArgument>-Xlint:all</compilerArgument>
           <encoding>UTF-8</encoding>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.0</version>
+        <configuration>
+          <testSourceDirectory>src/test/groovy</testSourceDirectory>
+          <includes>
+            <include>**/*Spec.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.6.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>addTestSources</goal>
+              <goal>compileTests</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
       </plugin>
       <plugin>
         <groupId>org.jfrog.buildinfo</groupId>
@@ -98,6 +131,29 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-shade-plugin</artifactId>
+      <version>3.1.1</version>
+      <executions>
+      <execution>
+      <phase>package</phase>
+      <goals>
+      <goal>shade</goal>
+      </goals>
+      <configuration>
+      <shadedArtifactAttached>true</shadedArtifactAttached>
+      <shadedClassifierName>all</shadedClassifierName>
+      <relocations>
+      <relocation>
+      <pattern>com.fasterxml.jackson</pattern>
+      <shadedPattern>trusona.com.fasterxml.jackson</shadedPattern>
+      </relocation>
+      </relocations>
+      </configuration>
+      </execution>
+      </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -105,6 +161,14 @@
     <repository>
       <id>central</id>
       <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <id>trusona-sdk-public-releases</id>
+      <url>https://trusona.jfrog.io/trusona/sdk-public-releases</url>
+    </repository>
+    <repository>
+      <id>trusona-sdk-public-snapshots</id>
+      <url>https://trusona.jfrog.io/trusona/sdk-public-snapshots</url>
     </repository>
     <repository>
       <id>trusona-sdk-releases</id>
@@ -127,6 +191,7 @@
       <url>https://maven.forgerock.org/repo/releases</url>
     </repository>
   </repositories>
+
   <pluginRepositories>
     <pluginRepository>
       <id>central</id>
@@ -137,4 +202,56 @@
       <url>https://dl.bintray.com/jfrog/jfrog-jars</url>
     </pluginRepository>
   </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.trusona.integration</groupId>
+      <artifactId>trusona-forgerock-common</artifactId>
+      <version>${trusona.common.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.forgerock.am</groupId>
+      <artifactId>openam-core</artifactId>
+      <version>${forgerock.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.forgerock.am</groupId>
+      <artifactId>openam-shared</artifactId>
+      <version>${forgerock.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>${groovy.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-core</artifactId>
+      <version>1.1-groovy-2.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.25</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <version>2.6</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
