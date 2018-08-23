@@ -8,8 +8,8 @@ import com.trusona.forgerock.auth.callback.TrucodeIdCallback;
 import org.apache.commons.lang3.StringUtils;
 import org.forgerock.json.JsonValue;
 import org.forgerock.openam.auth.node.api.Action;
-import org.forgerock.openam.authentication.callbacks.PollingWaitCallback;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 import org.forgerock.openam.authentication.callbacks.PollingWaitCallback.PollingWaitCallbackBuilder;
@@ -58,5 +58,10 @@ public class TrucodeState implements Supplier<Action> {
     }
 
     return action.replaceSharedState(newState).build();
+  }
+
+  @Override
+  public String toString() {
+    return "TrucodeState[trucodeId=" + trucodeId.toString() + ", payload=" + Optional.ofNullable(payload).orElse("null") + "]";
   }
 }

@@ -30,7 +30,7 @@ When you attempt to authenticate a user with this module, a Trusonafication will
 ### Mapping Trusona Users to ForgeRock Subjects
 
 To map your Trusona account to your ForgeRock profile, you'll provide one or more Alias Search Attributes to map your Trusona identifier to a ForgeRock identifier. To do this, in your node configuration, edit `Alias Search Attributes` to include the LDAP attribute that contains your Trusona identifier. The Trusona identifier may be different depending on how you are using Trusona (Trusona App vs Trusona SDK).
-
+*Note:* The Trusona Node is unable to access the Realm wide configuration `Alias Search Attribute Names` that the Trusona Module uses to map Trusona Users to ForgeRock Subjects. You must use the Node level configuration `Alias Search Attributes` instead.
 
 #### Mapping Users Registered with the Trusona App
 

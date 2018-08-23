@@ -27,4 +27,9 @@ public class InitialState implements Supplier<Action> {
       new HiddenValueCallback(TRUSONAFICATION_ID)
     ).build();
   }
+
+  @Override
+  public String toString() {
+    return "InitialState[]";
+  }
 }
