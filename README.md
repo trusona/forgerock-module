@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-The Trusona AM Authentication module is developed against and supported on version 5.5 of ForgeRock AM.
+The Trusona AM Authentication module is developed against and supported on version 5.5 of ForgeRock AM. For newer versions of ForgeRock AM, Trusona also has a [ForgeRock AM Authentication Node](https://github.com/trusona/forgerock-node).
 
 
 ## Installation
