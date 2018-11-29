@@ -19,12 +19,12 @@ script:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
+    script: mvn package deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
     on:
       branch: master
 
   - provider: script
     skip_cleanup: true
-    script: mvn install deploy -DciBuildNumber=${TRAVIS_BUILD_NUMBER}
+    script: scripts/deploy.sh
     on:
       tags: true
