@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/trusona/forgerock-module.svg?branch=master)](https://travis-ci.com/trusona/forgerock-module)
+
 # ForgeRock AM Authentication Module
 
 ## Supported Versions
