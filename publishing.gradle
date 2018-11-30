@@ -6,7 +6,7 @@ artifactory {
 
   publish {
     repository {
-      repoKey = project.version.endsWith("-SNAPSHOT") ? "sdk-snapshots-local" : "sdk-releases-local"
+      repoKey = project.version.endsWith("-SNAPSHOT") ? "sdk-public-snapshots-local" : "sdk-public-releases-local"
 
       username = ARTIFACTORY_USERNAME
       password = ARTIFACTORY_PASSWORD
@@ -20,7 +20,7 @@ artifactory {
   }
   resolve {
     repository {
-      repoKey = project.version.endsWith("-SNAPSHOT") ? "sdk-snapshots-local" : "sdk-releases-local"
+      repoKey = project.version.endsWith("-SNAPSHOT") ? "sdk-public-snapshots-local" : "sdk-public-releases-local"
 
       username = ARTIFACTORY_USERNAME
       password = ARTIFACTORY_PASSWORD
@@ -32,7 +32,39 @@ artifactory {
 publishing {
   publications {
     mavenJava(MavenPublication) {
+      pom {
+        name = "Trusona ForgeRock Module"
+        description = "This is the Trusona ForgeRock Module for ForgeRock AM that allows you to authenticate users with Trusona."
+
+        licenses {
+          license {
+            name = "Apache License, Version 2.0"
+            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          }
+        }
+        organization {
+          name = "Trusona Inc"
+          url = "https://trusona.com"
+        }
+        developers {
+          developer {
+            id = "trusona-engineering"
+            name = "Engineering @ Trusona"
+            email = "engineering@trusona.com"
+          }
+        }
+        scm {
+          connection = "scm:git:https://github.com/trusona/forgerock-module.git"
+          developerConnection = "scm:git:https://github.com/trusona/forgerock-module.git"
+          url = "https://github.com/trusona/forgerock-module"
+        }
+      }
+
       from components.java
     }
+  }
+
+  repositories {
+    mavenLocal()
   }
 }

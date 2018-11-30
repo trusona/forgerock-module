@@ -4,10 +4,12 @@ buildscript {
     mavenCentral()
     jcenter()
     mavenLocal()
+    maven { url "https://plugins.gradle.org/m2/" }
   }
 
   dependencies {
     classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.8.1"
+    classpath "com.github.jengelman.gradle.plugins:shadow:4.0.3"
   }
 }
 
@@ -19,11 +21,12 @@ apply plugin: "groovy"
 apply plugin: "idea"
 apply plugin: "maven"
 apply plugin: "jacoco"
-apply from: "publishing.gradle"
+apply plugin: "com.github.johnrengelman.shadow"
 apply from: "build-extras.gradle"
+apply from: "publishing.gradle"
 
 dependencies {
-  compile "com.trusona.integration:trusona-forgerock-common:${project.version}" // todo: which version of common should we use?
+  compile "com.trusona.integration:trusona-forgerock-common:${project.version}"
 
   compileOnly "org.forgerock.am:openam-shared:${forgerockVersion}"
   compileOnly "org.forgerock.am:openam-core:${forgerockVersion}"
@@ -40,4 +43,16 @@ dependencies {
 
 task version {
   println project.version
+}
+
+shadowJar {
+   baseName = project.name
+   version = project.version
+   classifier = "all"
+
+   relocate "com.fasterxml.jackson", "trusona.com.fasterxml.jackson"
+}
+
+assemble {
+  finalizedBy shadowJar
 }

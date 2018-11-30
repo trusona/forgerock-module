@@ -15,13 +15,14 @@ repositories {
   mavenCentral()
   jcenter()
   mavenLocal()
+  maven { url "https://trusona.jfrog.io/trusona/sdk-public-releases" }
 
-  maven { 
+  maven {
     credentials {
       username = ARTIFACTORY_USERNAME
       password = ARTIFACTORY_PASSWORD
     }
-    url "https://trusona.jfrog.io/trusona/sdk-releases" 
+    url "https://trusona.jfrog.io/trusona/sdk-releases"
   }
   maven {
     credentials {
