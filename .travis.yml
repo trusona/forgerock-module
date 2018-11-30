@@ -25,7 +25,7 @@ deploy:
 
   - provider: script
     skip_cleanup: true
-    script: ./gradlew artifactoryPublish && ./scripts/deploy-github.sh
+    script: scripts/deploy.sh
     on:
       tags: true
 
