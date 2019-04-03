@@ -8,14 +8,14 @@ import com.trusona.forgerock.auth.callback.CallbackFactory;
 import com.trusona.forgerock.auth.callback.CallbackParser;
 import com.trusona.forgerock.auth.callback.TrusonaCallback;
 import com.trusona.forgerock.auth.principal.PrincipalMapper;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.security.auth.callback.Callback;
-import javax.security.auth.login.LoginException;
 import java.security.Principal;
 import java.util.UUID;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.login.LoginException;
+import org.apache.commons.lang3.StringUtils;
 
 public class TrusonaAuthImpl {
+
   private Authenticator authenticator;
   private CallbackParser callbackParser;
   private CallbackFactory callbackFactory;
@@ -50,13 +50,14 @@ public class TrusonaAuthImpl {
 
       case TRUCODE_STATE:
         TrusonaDebug.getInstance().message("In TRUCODE_STATE with {} callbacks", callbacks.length);
+
         String trucodeId = callbackParser.getCallbackValue((HiddenValueCallback) callbacks[1]);
         String error = callbackParser.getCallbackValue((HiddenValueCallback) callbacks[2]);
         String payload = callbackParser.getCallbackValue((HiddenValueCallback) callbacks[3]);
         String savedTrusonaficationIdString = callbackParser.getCallbackValue((HiddenValueCallback) callbacks[4]);
 
         if (StringUtils.isNotBlank(error)) {
-          throw new AuthLoginException("Error from TruCode SDK: " + error);
+          throw new AuthLoginException(String.format("Error from TruCode SDK: %s", error));
         }
 
         if (StringUtils.isBlank(trucodeId) && StringUtils.isBlank(savedTrusonaficationIdString)) {
@@ -77,7 +78,9 @@ public class TrusonaAuthImpl {
         }
 
         if (StringUtils.isNotBlank(payload)) {
-          callbackUpdate.accept(REDIRECT_TO_DEEPLINK, 0, callbackFactory.makeScriptCallback("app.saveTrusonaficationCookie('" + trusonaficationId.toString() + "');"));
+          callbackUpdate.accept(REDIRECT_TO_DEEPLINK, 0, callbackFactory
+            .makeScriptCallback(String.format("app.saveTrusonaficationCookie('%s');", trusonaficationId)));
+
           callbackUpdate.accept(REDIRECT_TO_DEEPLINK, 1, callbackFactory.makeRedirectCallback(payload));
           return REDIRECT_TO_DEEPLINK;
         }
@@ -93,9 +96,9 @@ public class TrusonaAuthImpl {
         trusonaficationId = createTrusonaficationFromCallbacks(callbacks);
         return COMPLETION_STATE;
 
-
       case COMPLETION_STATE:
         TrusonaDebug.getInstance().message("In COMPLETION_STATE with trusonaficationId {}", trusonaficationId);
+
         principal = principalMapper.mapPrincipal(authenticator.getTrusonaficationResult(trusonaficationId))
           .orElseThrow(() -> new AuthLoginException("Could not get a principal from Trusonafication Result"));
 
@@ -118,4 +121,3 @@ public class TrusonaAuthImpl {
     return authenticator.createTrusonafication(trusonaCallback);
   }
 }
-
