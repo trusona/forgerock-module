@@ -16,6 +16,8 @@ public class TrusonaAuthPlugin implements AmPlugin {
   public TrusonaAuthPlugin(PluginTools pluginTools) {
     this.pluginTools = pluginTools;
     this.version = initVersion();
+
+    TrusonaDebug.getInstance().message("{} version is {}", getClass().getSimpleName(), version);
   }
 
   @Override
@@ -25,12 +27,6 @@ public class TrusonaAuthPlugin implements AmPlugin {
 
   @Override
   public void onInstall() throws PluginException {
-    pluginTools.addAuthModule(TrusonaAuth.class,
-                              getClass().getClassLoader().getResourceAsStream("amAuthTrusonaAuth.xml"));
-  }
-
-  @Override
-  public void upgrade(String fromVersion) throws PluginException {
     pluginTools.addAuthModule(TrusonaAuth.class,
                               getClass().getClassLoader().getResourceAsStream("amAuthTrusonaAuth.xml"));
   }
