@@ -42,6 +42,7 @@ public class TrusonaAuthPlugin implements AmPlugin {
       TrusonaDebug.getInstance().error("failed to load version", e);
     }
 
-    return properties.getProperty("version", "unspecified");
+    return properties.getProperty("version", "unspecified")
+      .replace("-SNAPSHOT", "");
   }
 }
