@@ -4,7 +4,7 @@
 
 ## Supported Versions
 
-The Trusona AM Authentication module is developed against and supported on version 5.5 of ForgeRock AM. For newer versions of ForgeRock AM, Trusona also has a [ForgeRock AM Authentication Node](https://github.com/trusona/forgerock-node).
+The Trusona AM Authentication module is developed against and supported on version 6.5 of ForgeRock AM. For newer versions of ForgeRock AM, Trusona also has a [ForgeRock AM Authentication Node](https://github.com/trusona/forgerock-node).
 
 
 ## Installation
@@ -17,7 +17,7 @@ To install the Trusona Forgerock Module, download the latest `trusona-forgerock-
 Before configuring the module, make sure you have your Trusona API token and secret. You will need to provide these values to the module so it can create Trusonafications. For steps on how to add a new Authentication module, see the [ForgeRock AM docs](https://backstage.forgerock.com/docs/am/5.5/authentication-guide/#build-config-sample-auth-module). When you are adding the Trusona Authentication Module, you will need to provide the following configuration values:
 
 1. Action - A string that will be used in the action field of a Trusonafication. See the following section for more details.
-1. Resource - string that will be used in the resoure field of a Trusonafication. See the following section for more details.
+1. Resource - string that will be used in the resource field of a Trusonafication. See the following section for more details.
 1. Trusona API Token - The API token you received from Trusona. This will be used to authenticate your module to Trusona's backend services.
 1. Trusona API Secret - The API secret you received from Trusona. This will be used to authenticate your module to Trusona's backend services.
 1. Deeplink URL - The URL that the user will be redirected to when they are on a mobile browser. This URL should be handled by the mobile app users will authenticate with. If not set, the user will be sent to the Trusona App.
@@ -60,7 +60,7 @@ The module comes with a front end JavaScript app that handles the rendering of T
 Desktop users will see a TruCode in their browser that they will need to scan with their Trusona enabled mobile app. They will then receive a Trusonafication, which they can either accept or reject. If they accept, the module will log in the user.
 
 ### Mobile Users
-On mobile devices, instead of seeing a TruCode, to users will be deeplinked into thier Trusona enabled mobile app, where they will be presented with a Trusonafication. Once accepted, the app will send the user back to the browser, where they will be logged in.
+On mobile devices, instead of seeing a TruCode, users will be deeplinked into their Trusona enabled mobile app, where they will be presented with a Trusonafication. Once accepted, the app will send the user back to the browser, where they will be logged in.
 
 ### Programmatic Usage
 
