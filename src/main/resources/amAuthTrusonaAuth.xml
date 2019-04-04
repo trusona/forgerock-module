@@ -3,7 +3,7 @@
         "jar://com/sun/identity/sm/sms.dtd">
 
 <ServicesConfiguration>
-    <Service name="iPlanetAMAuthTrusonaAuthService" version="1.0">
+    <Service name="iPlanetAMAuthTrusonaAuthService" version="2.0">
         <Schema
                 serviceHierarchy="/DSAMEConfig/authentication/iPlanetAMAuthTrusonaAuthService"
                 i18nFileName="amAuthTrusonaAuth" revisionNumber="10"
