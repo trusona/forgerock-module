@@ -1,5 +1,9 @@
 package com.trusona.forgerock.auth;
 
+import static com.trusona.forgerock.auth.Constants.CALLBACK_ZERO;
+import static com.trusona.forgerock.auth.Constants.ENDPOINT_URL_PRODUCTION;
+import static com.trusona.forgerock.auth.Constants.ENDPOINT_URL_UAT;
+
 import com.sun.identity.authentication.spi.AMLoginModule;
 import com.sun.identity.authentication.spi.AuthLoginException;
 import com.sun.identity.shared.datastruct.CollectionHelper;
@@ -14,21 +18,17 @@ import com.trusona.forgerock.auth.principal.IdentityFinder;
 import com.trusona.sdk.Trusona;
 import com.trusona.sdk.TrusonaEnvironment;
 import com.trusona.sdk.resources.exception.TrusonaException;
-
-import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.login.LoginException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
-
-import static com.trusona.forgerock.auth.Constants.CALLBACK_ZERO;
-import static com.trusona.forgerock.auth.Constants.ENDPOINT_URL_PRODUCTION;
-import static com.trusona.forgerock.auth.Constants.ENDPOINT_URL_UAT;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.login.LoginException;
 
 
 public class TrusonaAuth extends AMLoginModule {
+
   private static final String TRUSONA_API_TOKEN = "trusona-api-token";
   private static final String TRUSONA_API_SECRET = "trusona-api-secret";
   private static final String TRUSONA_ACTION = "trusona-action";
