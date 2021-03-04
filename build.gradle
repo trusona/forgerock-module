@@ -3,6 +3,7 @@ buildscript {
     google()
     mavenCentral()
     jcenter()
+    maven { url "https://download.oracle.com/maven" }
     maven { url "https://plugins.gradle.org/m2/" }
   }
 
