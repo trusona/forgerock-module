@@ -7,10 +7,3 @@ updates:
     pull-request-branch-name:
       separator: "-"
     open-pull-requests-limit: 5
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
-    open-pull-requests-limit: 5
